@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 700 900">
+<defs><linearGradient id="b" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#27c7d8"/><stop offset=".45" stop-color="#0ba0b4"/><stop offset="1" stop-color="#077d92"/></linearGradient><linearGradient id="l" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#fff"/><stop offset="1" stop-color="#eefcff"/></linearGradient><filter id="s"><feDropShadow dx="0" dy="18" stdDeviation="18" flood-opacity=".18"/></filter></defs>
+<ellipse cx="350" cy="835" rx="225" ry="26" fill="#0b1736" opacity=".12"/>
+<g filter="url(#s)"><path d="M180 190c0-62 50-112 112-112h116c62 0 112 50 112 112v506c0 78-53 118-170 118S180 774 180 696z" fill="url(#b)"/><rect x="275" y="26" width="150" height="90" rx="22" fill="#0795a7"/><path d="M409 230h75c34 0 62 28 62 62v220c0 36-29 65-65 65h-72v-66h53c14 0 25-11 25-25V317c0-14-11-25-25-25h-53z" fill="#fff" opacity=".92"/>
+<path d="M215 225c0-35 28-64 64-64h140c36 0 64 29 64 64v448c0 36-29 65-65 65H280c-36 0-65-29-65-65z" fill="url(#l)" stroke="#d8eef2" stroke-width="4"/>
+<path d="M220 562c86 24 163 5 231-57 11-10 21-21 29-32v190c0 44-28 68-68 68H287c-42 0-67-25-67-68z" fill="#00799d"/>
+<path d="M220 607c78 14 151-2 220-48 14-9 27-20 40-31v58c-76 60-162 82-260 66z" fill="#21b8d5"/>
+<text x="350" y="266" text-anchor="middle" font-family="Arial" font-weight="900" font-size="48" fill="#0047BA">GHAR<tspan fill="#E11D2E">CHAMAK</tspan></text><text x="350" y="304" text-anchor="middle" font-family="Arial" font-weight="700" font-size="20" fill="#173b75">by Pasalho</text>
+<text x="350" y="382" text-anchor="middle" font-family="Arial" font-weight="900" font-size="57" fill="#0047BA">FLOOR</text><text x="350" y="438" text-anchor="middle" font-family="Arial" font-weight="900" font-size="57" fill="#0047BA">CLEANER</text>
+<rect x="270" y="470" width="160" height="44" rx="8" fill="#0a9ba6"/><text x="350" y="501" text-anchor="middle" font-family="Arial" font-weight="900" font-size="25" fill="#fff">FRESH HOME</text>
+<path d="M260 572h180v90H260z" fill="#e8f8fb"/><path d="M270 630h160M300 572v90M350 572v90M400 572v90" stroke="#b4dce8" stroke-width="3"/><circle cx="390" cy="585" r="20" fill="#fff"/><circle cx="410" cy="570" r="12" fill="#fff"/>
+<text x="350" y="695" text-anchor="middle" font-family="Arial" font-weight="800" font-size="26" fill="#fff">500 ml</text></g></svg>
