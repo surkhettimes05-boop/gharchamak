@@ -1,0 +1,3 @@
+import type { MetadataRoute } from "next";
+import { brand, products } from "@/src/config/brand";
+export default function sitemap(): MetadataRoute.Sitemap { const pages=["","products","why-gharchamak","retailers","about","faq","contact","privacy",...products.map(p=>`products/${p.slug}`)];return (["en","ne"] as const).flatMap(locale=>pages.map(page=>({url:`${brand.siteUrl}/${locale}${page?`/${page}`:""}`,lastModified:new Date(),changeFrequency:page===""?"weekly" as const:"monthly" as const,priority:page===""?1:page.startsWith("products/")?.8:.7,alternates:{languages:{en:`${brand.siteUrl}/en${page?`/${page}`:""}`,ne:`${brand.siteUrl}/ne${page?`/${page}`:""}`}}}))); }
