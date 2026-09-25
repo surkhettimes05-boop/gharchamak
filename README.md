@@ -67,4 +67,21 @@ Analytics scripts are not rendered when IDs are empty. If analytics or advertisi
 
 ## Deployment
 
-Run `npm run build` for a production build. This project includes Sites hosting configuration and can also be adapted to another Next.js-compatible host. Configure the environment values above on the deployment platform before publishing.
+### Vercel (Recommended)
+
+This project is configured for Vercel deployment:
+
+1. Push your code to a Git repository (GitHub, GitLab, or Bitbucket)
+2. Import the project in Vercel
+3. Configure the following environment variables in Vercel:
+   - `NEXT_PUBLIC_SITE_URL`: Your production domain (e.g., https://your-domain.com)
+   - `NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION`: Google Search Console verification code (optional)
+   - `NEXT_PUBLIC_GA_ID`: Google Analytics ID (optional)
+   - `NEXT_PUBLIC_META_PIXEL_ID`: Meta Pixel ID (optional)
+4. Deploy
+
+The project uses `vercel.json` for configuration and `next.config.ts` with standalone output for optimal Vercel performance.
+
+### Other Platforms
+
+Run `npm run build` for a production build. This project can be adapted to any Next.js-compatible hosting platform. Configure the environment values above on the deployment platform before publishing.
