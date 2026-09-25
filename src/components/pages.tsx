@@ -11,10 +11,13 @@ export function SectionHeading({ eyebrow, title, copyText, center = false }: { e
 }
 
 export function ProductVisual({ product, large = false }: { product: (typeof products)[number]; large?: boolean }) {
+  const imageBySlug: Record<ProductSlug, string> = {
+    "dishwash-liquid": "/products/dishwash/dishwash.svg",
+    "floor-cleaner": "/products/floor-cleaner/floor-cleaner.svg",
+    "toilet-cleaner": "/products/toilet-cleaner/toilet-cleaner.svg",
+  };
   return <div className={`product-visual product-${product.color} ${large ? "product-visual-large" : ""}`}>
-    <div className={`mockup-crop mockup-${product.slug}`}>
-      <img src="/brand/gharchamak-range.webp" alt={`${product.name.en} packaging concept`} />
-    </div>
+    <img className="product-render" src={imageBySlug[product.slug]} alt={`${product.name.en} packaging concept`} />
     <span className="visual-glow" />
   </div>;
 }
@@ -65,8 +68,10 @@ export function HomePage({ locale }: { locale: Locale }) {
           </div>
         </div>
         <div className="hero-art">
-          <div className="art-card">
-            <img src="/brand/gharchamak-range.webp" alt="GharChamak dishwash, floor cleaner and toilet cleaner packaging concepts" />
+          <div className="art-card hero-product-stage">
+            <img className="hero-bottle hero-bottle-dish" src="/products/dishwash/dishwash.svg" alt="GharChamak Dishwash Liquid packaging concept" />
+            <img className="hero-bottle hero-bottle-floor" src="/products/floor-cleaner/floor-cleaner.svg" alt="GharChamak Floor Cleaner packaging concept" />
+            <img className="hero-bottle hero-bottle-toilet" src="/products/toilet-cleaner/toilet-cleaner.svg" alt="GharChamak Toilet Cleaner packaging concept" />
           </div>
           <div className="floating-note note-one"><small>{locale === "en" ? "Brand promise" : "ब्रान्ड वाचा"}</small><strong>{brand.tagline}</strong></div>
           <div className="floating-note note-two"><span className="mini-dot" />{locale === "en" ? "3 focused launch products" : "३ केन्द्रित सुरुवाती उत्पादन"}</div>
