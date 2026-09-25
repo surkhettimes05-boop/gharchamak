@@ -1,6 +1,4 @@
-import type { Locale } from "@/src/config/brand";
-
-export default async function LocaleLayout({ children, params }: { children: React.ReactNode; params: Promise<{ locale: Locale }> }) {
+export default async function LocaleLayout({ children, params }: { children: React.ReactNode; params: Promise<{ locale: string }> }) {
   const { locale } = await params;
   return <div lang={locale === "ne" ? "ne" : "en"}>{children}</div>;
 }
