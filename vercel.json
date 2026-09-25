@@ -3,20 +3,5 @@
   "outputDirectory": ".next",
   "devCommand": "npm run dev",
   "installCommand": "npm install",
-  "framework": "nextjs",
-  "regions": ["iad1"],
-  "env": {
-    "NEXT_PUBLIC_SITE_URL": {
-      "description": "The canonical URL of your site (e.g., https://your-domain.com)"
-    },
-    "NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION": {
-      "description": "Google Search Console verification code (optional)"
-    },
-    "NEXT_PUBLIC_GA_ID": {
-      "description": "Google Analytics ID (optional)"
-    },
-    "NEXT_PUBLIC_META_PIXEL_ID": {
-      "description": "Meta Pixel ID (optional)"
-    }
-  }
+  "framework": "nextjs"
 }
