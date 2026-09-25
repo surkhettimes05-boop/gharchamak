@@ -8,7 +8,7 @@ export const brand = {
   tagline: "Strong Clean. Fair Price.",
   taglineNe: "बलियो सफाइ, सही दाम।",
   description: "GharChamak is a Nepal-focused household cleaning brand by Pasalho, built around dependable everyday cleaning and fair prices.",
-  siteUrl: process.env.NEXT_PUBLIC_SITE_URL || "https://gharchamak-pasalho.surkhettimes05.chatgpt.site",
+  siteUrl: process.env.NEXT_PUBLIC_SITE_URL || "https://gharchamak.vercel.app",
   phoneDisplay: "+977 9822403262",
   phone: "+9779822403262",
   whatsappNumber: "9779822403262",
@@ -16,7 +16,7 @@ export const brand = {
   location: "Birendranagar, Surkhet, Nepal",
   launchNote: "Launching initially from Birendranagar, Surkhet.",
   social: { facebook: "", instagram: "", tiktok: "", youtube: "", x: "" },
-  ogImage: "",
+  ogImage: "/brand/gharchamak-range.webp",
 } as const;
 
 export const products = [
