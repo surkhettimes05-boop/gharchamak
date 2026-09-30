@@ -45,4 +45,27 @@ Localized metadata, canonical URLs, hreflang alternates and JSON-LD are generate
 
 The project is configured for native Vercel Next.js deployment. Set the production environment values in Vercel before publishing a custom domain.
 
-No database or authentication layer is required for this brand site.
+## Admin CMS
+
+The repository now includes a protected admin panel at `/admin`.
+
+It manages:
+- offers and campaigns
+- retailer/distributor partners
+- image/video media records and image uploads
+- customer reviews
+- homepage announcement content
+- product availability, MRP, pack size and public product image overrides
+
+The public site only renders published CMS records. Static brand/product content remains the fallback when the CMS is not configured.
+
+### Admin infrastructure
+
+1. Provision **Neon Postgres** through Vercel Marketplace and expose `DATABASE_URL`.
+2. Configure `ADMIN_EMAIL`, `ADMIN_PASSWORD` and a long `ADMIN_SESSION_SECRET`.
+3. Provision **Vercel Blob** and expose `BLOB_READ_WRITE_TOKEN` if direct media uploads are required.
+4. Redeploy. The CMS tables are created lazily on first use.
+
+Do not prefix admin credentials or database/blob tokens with `NEXT_PUBLIC_`.
+
+The V1 admin uses a single environment-configured owner account. If multiple staff accounts, granular permissions or audit approval workflows become necessary, replace this with a full identity provider before expanding access.

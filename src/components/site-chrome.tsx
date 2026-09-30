@@ -29,7 +29,7 @@ export function Logo({ light = false }: { light?: boolean }) {
 
 function path(locale: Locale, slug = "") { return `/${locale}${slug ? `/${slug}` : ""}`; }
 
-export function Header({ locale, currentPath }: { locale: Locale; currentPath: string }) {
+export function Header({ locale, currentPath, announcement }: { locale: Locale; currentPath: string; announcement?: string }) {
   const c = copy[locale];
   const alternate = locale === "en" ? "ne" : "en";
   const links = [
@@ -39,7 +39,7 @@ export function Header({ locale, currentPath }: { locale: Locale; currentPath: s
 
   return <>
     <a className="skip-link" href="#main">{c.skip}</a>
-    <div className="announcement"><span>GharChamak</span><span>•</span><span>{locale === "en" ? "Built for everyday Nepali homes" : "दैनिक नेपाली घरका लागि"}</span></div>
+    <div className="announcement"><span>{announcement || (locale === "en" ? "GharChamak • Built for everyday Nepali homes" : "घरचमक • दैनिक नेपाली घरका लागि")}</span></div>
     <header className="site-header">
       <div className="container nav-shell">
         <Link href={path(locale)} aria-label="GharChamak home"><Logo /></Link>
@@ -86,6 +86,6 @@ export function WhatsAppFloat({ locale }: { locale: Locale }) {
   return <a className="whatsapp-float" href={whatsappUrl(whatsappMessages.general)} target="_blank" rel="noreferrer" aria-label={locale === "en" ? "Chat with GharChamak on WhatsApp" : "घरचमकसँग WhatsApp मा कुरा गर्नुहोस्"}><MessageCircle size={22} /></a>;
 }
 
-export function PageShell({ locale, currentPath, children }: { locale: Locale; currentPath: string; children: React.ReactNode }) {
-  return <div className={locale === "ne" ? "locale-ne" : ""}><Header locale={locale} currentPath={currentPath} /><main id="main">{children}</main><Footer locale={locale} /><WhatsAppFloat locale={locale} /></div>;
+export function PageShell({ locale, currentPath, announcement, children }: { locale: Locale; currentPath: string; announcement?: string; children: React.ReactNode }) {
+  return <div className={locale === "ne" ? "locale-ne" : ""}><Header locale={locale} currentPath={currentPath} announcement={announcement} /><main id="main">{children}</main><Footer locale={locale} /><WhatsAppFloat locale={locale} /></div>;
 }

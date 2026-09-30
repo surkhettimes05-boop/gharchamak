@@ -4,10 +4,12 @@ import { AboutPage, ContactPage, FaqPage, HomePage, PrivacyPage, ProductPage, Pr
 import { PageShell } from "@/src/components/site-chrome";
 import { brand, products, type Locale, type ProductSlug } from "@/src/config/brand";
 import { faqItems } from "@/src/content/site";
+import { getPublicCmsContent } from "@/src/cms/content";
 
 type Params = Promise<{ locale: string; slug?: string[] }>;
 const locales: Locale[] = ["en", "ne"];
 const simplePages = ["products", "why-gharchamak", "retailers", "about", "faq", "contact", "privacy"] as const;
+export const revalidate = 60;
 
 function isLocale(value: string): value is Locale { return locales.includes(value as Locale); }
 function getRoute(slug?: string[]) { return slug?.join("/") || ""; }
@@ -69,16 +71,17 @@ export default async function LocalizedPage({ params }: { params: Params }) {
   const route = getRoute(slug);
   if (!validRoute(route)) notFound();
   const currentPath = route ? `/${route}` : "";
+  const cms = await getPublicCmsContent();
   let page: React.ReactNode;
-  if (route === "") page = <HomePage locale={locale} />;
-  else if (route === "products") page = <ProductsPage locale={locale} />;
+  if (route === "") page = <HomePage locale={locale} cms={cms} />;
+  else if (route === "products") page = <ProductsPage locale={locale} cms={cms} />;
   else if (route === "why-gharchamak") page = <WhyPage locale={locale} />;
-  else if (route === "retailers") page = <RetailersPage locale={locale} />;
+  else if (route === "retailers") page = <RetailersPage locale={locale} cms={cms} />;
   else if (route === "about") page = <AboutPage locale={locale} />;
   else if (route === "faq") page = <FaqPage locale={locale} />;
   else if (route === "contact") page = <ContactPage locale={locale} />;
   else if (route === "privacy") page = <PrivacyPage locale={locale} />;
-  else page = <ProductPage locale={locale} slug={route.split("/")[1] as ProductSlug} />;
+  else page = <ProductPage locale={locale} slug={route.split("/")[1] as ProductSlug} cms={cms} />;
 
   const organization = { "@context": "https://schema.org", "@type": "Organization", name: brand.name, url: brand.siteUrl, description: brand.description, telephone: brand.phone, areaServed: "Nepal", brand: { "@type": "Brand", name: brand.name }, sameAs: Object.values(brand.social).filter(Boolean) };
   const website = { "@context": "https://schema.org", "@type": "WebSite", name: brand.name, url: brand.siteUrl, inLanguage: ["en", "ne"] };
@@ -89,5 +92,6 @@ export default async function LocalizedPage({ params }: { params: Params }) {
     extra.push({ "@context": "https://schema.org", "@type": "Product", name: product.name[locale], description: product.short[locale], brand: { "@type": "Brand", name: brand.name }, category: "Household cleaning product" });
     extra.push({ "@context": "https://schema.org", "@type": "BreadcrumbList", itemListElement: [{ "@type": "ListItem", position: 1, name: locale === "en" ? "Home" : "गृहपृष्ठ", item: `${brand.siteUrl}/${locale}` }, { "@type": "ListItem", position: 2, name: locale === "en" ? "Products" : "उत्पादनहरू", item: `${brand.siteUrl}/${locale}/products` }, { "@type": "ListItem", position: 3, name: product.name[locale] }] });
   }
-  return <PageShell locale={locale} currentPath={currentPath}><JsonLd data={[organization, website, ...extra]} />{page}</PageShell>;
+  const announcement = cms.settings[locale === "ne" ? "announcement_ne" : "announcement_en"];
+  return <PageShell locale={locale} currentPath={currentPath} announcement={announcement}><JsonLd data={[organization, website, ...extra]} />{page}</PageShell>;
 }

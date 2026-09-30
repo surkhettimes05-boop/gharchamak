@@ -3,6 +3,7 @@ import { ArrowRight, BadgeCheck, Check, Home, MapPin, MessageCircle, PackageChec
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { brand, products, type Locale, type ProductSlug, whatsappMessages, whatsappUrl } from "@/src/config/brand";
 import { copy, faqItems } from "@/src/content/site";
+import type { CmsPublicContent, ProductOverride } from "@/src/cms/types";
 
 const path = (locale: Locale, slug = "") => `/${locale}${slug ? `/${slug}` : ""}`;
 
@@ -10,24 +11,31 @@ export function SectionHeading({ eyebrow, title, copyText, center = false }: { e
   return <div className={`section-heading ${center ? "center" : ""}`}>{eyebrow ? <p className="eyebrow">{eyebrow}</p> : null}<h2>{title}</h2>{copyText ? <p>{copyText}</p> : null}</div>;
 }
 
-export function ProductVisual({ product, large = false }: { product: (typeof products)[number]; large?: boolean }) {
-  const imageBySlug: Record<ProductSlug, string> = {
-    "dishwash-liquid": "/products/dishwash/dishwash.svg",
-    "floor-cleaner": "/products/floor-cleaner/floor-cleaner.svg",
-    "toilet-cleaner": "/products/toilet-cleaner/toilet-cleaner.svg",
-  };
+const defaultProductImages: Record<ProductSlug, string> = {
+  "dishwash-liquid": "/products/dishwash/dishwash.svg",
+  "floor-cleaner": "/products/floor-cleaner/floor-cleaner.svg",
+  "toilet-cleaner": "/products/toilet-cleaner/toilet-cleaner.svg",
+};
+
+function productOverride(cms: CmsPublicContent | undefined, slug: ProductSlug): ProductOverride | undefined {
+  return cms?.productOverrides.find(item => item.productSlug === slug);
+}
+
+export function ProductVisual({ product, large = false, imageUrl }: { product: (typeof products)[number]; large?: boolean; imageUrl?: string | null }) {
   return <div className={`product-visual product-${product.color} ${large ? "product-visual-large" : ""}`}>
-    <img className="product-render" src={imageBySlug[product.slug]} alt={`${product.name.en} packaging concept`} />
+    <img className="product-render" src={imageUrl || defaultProductImages[product.slug]} alt={`${product.name.en} product image`} />
     <span className="visual-glow" />
   </div>;
 }
 
-export function ProductCard({ product, locale }: { product: (typeof products)[number]; locale: Locale }) {
+export function ProductCard({ product, locale, cms }: { product: (typeof products)[number]; locale: Locale; cms?: CmsPublicContent }) {
   const c = copy[locale];
+  const override = productOverride(cms, product.slug);
+  const available = override?.status === "available" || (!override?.status && product.status === "available");
   return <article className={`product-card card-${product.color}`}>
-    <div className="product-card-visual"><ProductVisual product={product} /></div>
+    <div className="product-card-visual"><ProductVisual product={product} imageUrl={override?.imageUrl} /></div>
     <div className="product-card-body">
-      <div className="product-meta"><span className="status-dot" />{c.common.coming}</div>
+      <div className="product-meta"><span className="status-dot" />{available ? (locale === "en" ? "Available" : "उपलब्ध") : c.common.coming}</div>
       <p className="product-variant">{product.variant[locale]}</p>
       <h3>{product.name[locale]}</h3>
       <p>{product.short[locale]}</p>
@@ -46,7 +54,7 @@ const benefits = {
   ne: [[Sparkles, "बलियो सफाइ", "दैनिक घरायसी प्रयोगका लागि व्यावहारिक सफाइ प्रदर्शन।"], [WalletCards, "सही दाम", "महँगो देखावटभन्दा पुनःखरिद योग्य मूल्य।"], [BadgeCheck, "एकरूप गुणस्तर", "स्पष्ट अपेक्षा, सरल दाबी र अनुशासित उत्पादन मापदण्ड।"], [Home, "दैनिक घरका लागि", "वास्तविक नेपाली घरको दैनिक जीवनलाई ध्यानमा राखेर।"]],
 } as const;
 
-export function HomePage({ locale }: { locale: Locale }) {
+export function HomePage({ locale, cms }: { locale: Locale; cms?: CmsPublicContent }) {
   const c = copy[locale];
   return <>
     <section className="hero-premium">
@@ -94,9 +102,19 @@ export function HomePage({ locale }: { locale: Locale }) {
           <SectionHeading eyebrow={locale === "en" ? "Launch range" : "सुरुवाती दायरा"} title={locale === "en" ? "Three products. One clear promise." : "तीन उत्पादन। एउटै स्पष्ट वाचा।"} copyText={locale === "en" ? "A focused first range designed to look coherent on shelf and solve common cleaning jobs without confusing the customer." : "सामान्य सफाइ आवश्यकताका लागि स्पष्ट, एउटै पहिचान भएको सुरुवाती उत्पादन दायरा।"} />
           <Link className="text-link section-link" href={path(locale, "products")}>{locale === "en" ? "Explore the range" : "उत्पादन हेर्नुहोस्"}<ArrowRight size={16}/></Link>
         </div>
-        <div className="product-grid">{products.map(p => <ProductCard key={p.slug} product={p} locale={locale} />)}</div>
+        <div className="product-grid">{products.map(p => <ProductCard key={p.slug} product={p} locale={locale} cms={cms} />)}</div>
       </div>
     </section>
+
+    {cms?.offers.length ? <section className="section cms-public-section"><div className="container">
+      <SectionHeading eyebrow={locale === "en" ? "Current offers" : "हालका अफर"} title={locale === "en" ? "Offers worth knowing about." : "थाहा पाउनुपर्ने अफरहरू।"} />
+      <div className="cms-offer-grid">{cms.offers.map(offer => <article className="cms-offer-card" key={offer.id}>
+        {offer.imageUrl ? <img src={offer.imageUrl} alt="" /> : null}
+        <div><span className="cms-badge">{offer.badge || (locale === "en" ? "Offer" : "अफर")}</span><h3>{locale === "ne" && offer.titleNe ? offer.titleNe : offer.title}</h3>
+        <p>{locale === "ne" && offer.descriptionNe ? offer.descriptionNe : offer.description}</p>
+        {offer.ctaUrl ? <a className="text-link" href={offer.ctaUrl}>{offer.ctaLabel || (locale === "en" ? "Learn more" : "थप जान्नुहोस्")}<ArrowRight size={16}/></a> : null}</div>
+      </article>)}</div>
+    </div></section> : null}
 
     <section className="section system-section">
       <div className="container system-grid">
@@ -110,7 +128,7 @@ export function HomePage({ locale }: { locale: Locale }) {
           <div className="brand-symbol-large">
             <svg viewBox="0 0 180 150" aria-hidden="true"><path d="M18 72 88 17l74 55" fill="none" stroke="currentColor" strokeWidth="18" strokeLinecap="round" strokeLinejoin="round"/><path d="M43 70v60h92V70" fill="none" stroke="currentColor" strokeWidth="14" strokeLinejoin="round"/><path d="M90 84v27M76 97h28" stroke="currentColor" strokeWidth="10" strokeLinecap="round"/></svg><i>✦</i>
           </div>
-          <div className="brand-wordmark"><strong><span>Ghar</span><em>Chamak</em></strong><small>by Pasalho</small></div>
+          <div className="brand-wordmark"><strong><span>Ghar</span><em>Chamak</em></strong></div>
           <div className="brand-tagline">{brand.tagline}<span lang="ne">{brand.taglineNe}</span></div>
         </div>
       </div>
@@ -124,6 +142,15 @@ export function HomePage({ locale }: { locale: Locale }) {
     </section>
 
     <RetailerBanner locale={locale} />
+
+    {cms?.reviews.length ? <section className="section cms-public-section cms-review-section"><div className="container">
+      <SectionHeading eyebrow={locale === "en" ? "Customer voices" : "ग्राहक अनुभव"} title={locale === "en" ? "What customers are saying." : "ग्राहकले के भन्छन्।"} />
+      <div className="cms-review-grid">{cms.reviews.map(review => <article className="cms-review-card" key={review.id}>
+        {review.mediaUrl ? <img src={review.mediaUrl} alt="" /> : null}
+        <blockquote>“{locale === "ne" && review.quoteNe ? review.quoteNe : review.quote}”</blockquote>
+        <strong>{review.customerName}</strong>
+      </article>)}</div>
+    </div></section> : null}
 
     <section className="section faq-section"><div className="container faq-grid"><SectionHeading eyebrow="FAQ" title={locale === "en" ? "Clear answers, no clutter." : "स्पष्ट उत्तर, अनावश्यक जटिलता बिना।"} copyText={locale === "en" ? "The essentials about GharChamak, availability and future stocking." : "घरचमक, उपलब्धता र भविष्यको स्टकबारे मुख्य जानकारी।"} /><div><FaqList locale={locale} limit={5} /><Link className="text-link faq-more" href={path(locale, "faq")}>{locale === "en" ? "View all questions" : "सबै प्रश्न हेर्नुहोस्"}<ArrowRight size={17} /></Link></div></div></section>
     <ContactBanner locale={locale} />
@@ -144,15 +171,15 @@ export function PageIntro({ eyebrow, title, copyText }: { eyebrow: string; title
   return <section className="page-intro"><div className="page-intro-orb"/><div className="container"><p className="eyebrow">{eyebrow}</p><h1>{title}</h1><p>{copyText}</p></div></section>;
 }
 
-export function ProductsPage({ locale }: { locale: Locale }) {
+export function ProductsPage({ locale, cms }: { locale: Locale; cms?: CmsPublicContent }) {
   const c = copy[locale];
-  return <><PageIntro eyebrow={c.nav.products} title={locale === "en" ? "A focused range for everyday cleaning." : "दैनिक सफाइका लागि केन्द्रित उत्पादन दायरा।"} copyText={locale === "en" ? "Three household cleaning products are being prepared as the first GharChamak range." : "घरचमकको पहिलो दायराका रूपमा तीन घर सफाइ उत्पादन तयार हुँदैछन्।"} /><section className="section"><div className="container product-grid">{products.map(p => <ProductCard key={p.slug} product={p} locale={locale} />)}</div></section><section className="small-note"><div className="container"><PackageCheck size={24}/><div><h2>{locale === "en" ? "Launch information, kept honest." : "बजार जानकारी, स्पष्ट रूपमा।"}</h2><p>{locale === "en" ? "Prices, pack sizes, ingredients and retail availability will only be published after confirmation." : "मूल्य, प्याक साइज, सामग्री र खुद्रा उपलब्धता पुष्टि भएपछि मात्र प्रकाशित गरिनेछ।"}</p></div></div></section><ContactBanner locale={locale}/></>;
+  return <><PageIntro eyebrow={c.nav.products} title={locale === "en" ? "A focused range for everyday cleaning." : "दैनिक सफाइका लागि केन्द्रित उत्पादन दायरा।"} copyText={locale === "en" ? "Three household cleaning products are being prepared as the first GharChamak range." : "घरचमकको पहिलो दायराका रूपमा तीन घर सफाइ उत्पादन तयार हुँदैछन्।"} /><section className="section"><div className="container product-grid">{products.map(p => <ProductCard key={p.slug} product={p} locale={locale} cms={cms} />)}</div></section><section className="small-note"><div className="container"><PackageCheck size={24}/><div><h2>{locale === "en" ? "Launch information, kept honest." : "बजार जानकारी, स्पष्ट रूपमा।"}</h2><p>{locale === "en" ? "Prices, pack sizes, ingredients and retail availability will only be published after confirmation." : "मूल्य, प्याक साइज, सामग्री र खुद्रा उपलब्धता पुष्टि भएपछि मात्र प्रकाशित गरिनेछ।"}</p></div></div></section><ContactBanner locale={locale}/></>;
 }
 
-export function ProductPage({ locale, slug }: { locale: Locale; slug: ProductSlug }) {
-  const c = copy[locale]; const product = products.find(p => p.slug === slug)!; const related = products.filter(p => p.slug !== slug);
+export function ProductPage({ locale, slug, cms }: { locale: Locale; slug: ProductSlug; cms?: CmsPublicContent }) {
+  const c = copy[locale]; const product = products.find(p => p.slug === slug)!; const related = products.filter(p => p.slug !== slug); const override = productOverride(cms, slug); const available = override?.status === "available" || (!override?.status && product.status === "available");
   const message = `Namaste, I would like more information about ${product.name.en}.`;
-  return <><section className="product-hero"><div className="container"><nav className="breadcrumbs"><Link href={path(locale)}>{c.common.home}</Link><span>/</span><Link href={path(locale, "products")}>{c.nav.products}</Link><span>/</span><span>{product.name[locale]}</span></nav><div className="product-detail-grid"><ProductVisual product={product} large/><div><div className="product-meta"><span className="status-dot"/>{c.common.coming}</div><p className="product-variant">{product.variant[locale]}</p><h1>{product.name[locale]}</h1><p className="product-lead">{product.short[locale]}</p><a className="btn btn-dark btn-lg" href={whatsappUrl(message)} target="_blank" rel="noreferrer"><MessageCircle size={18}/>{c.common.productEnquiry}</a></div></div></div></section><section className="section"><div className="container detail-grid"><article><h2>{c.common.characteristics}</h2><ul className="check-list">{product.characteristics[locale].map(item => <li key={item}><Check size={18}/>{item}</li>)}</ul></article><article><h2>{c.common.use}</h2><p>{product.use[locale]}</p></article><article><h2>{c.common.packSizes}</h2><p>{c.common.packPending}</p></article><article><h2>{c.common.safety}</h2><p>{c.common.safetyCopy}</p></article></div></section><section className="section related-section"><div className="container"><SectionHeading title={c.common.related}/><div className="product-grid related-grid">{related.map(p => <ProductCard key={p.slug} product={p} locale={locale}/>)}</div></div></section></>;
+  return <><section className="product-hero"><div className="container"><nav className="breadcrumbs"><Link href={path(locale)}>{c.common.home}</Link><span>/</span><Link href={path(locale, "products")}>{c.nav.products}</Link><span>/</span><span>{product.name[locale]}</span></nav><div className="product-detail-grid"><ProductVisual product={product} large imageUrl={override?.imageUrl}/><div><div className="product-meta"><span className="status-dot"/>{available ? (locale === "en" ? "Available" : "उपलब्ध") : c.common.coming}</div><p className="product-variant">{product.variant[locale]}</p><h1>{product.name[locale]}</h1><p className="product-lead">{product.short[locale]}</p><a className="btn btn-dark btn-lg" href={whatsappUrl(message)} target="_blank" rel="noreferrer"><MessageCircle size={18}/>{c.common.productEnquiry}</a></div></div></div></section><section className="section"><div className="container detail-grid"><article><h2>{c.common.characteristics}</h2><ul className="check-list">{product.characteristics[locale].map(item => <li key={item}><Check size={18}/>{item}</li>)}</ul></article><article><h2>{c.common.use}</h2><p>{product.use[locale]}</p></article><article><h2>{c.common.packSizes}</h2><p>{override?.packSize || c.common.packPending}</p></article>{override?.mrp ? <article><h2>{locale === "en" ? "MRP" : "एमआरपी"}</h2><p>NPR {override.mrp}</p></article> : null}<article><h2>{c.common.safety}</h2><p>{c.common.safetyCopy}</p></article></div></section><section className="section related-section"><div className="container"><SectionHeading title={c.common.related}/><div className="product-grid related-grid">{related.map(p => <ProductCard key={p.slug} product={p} locale={locale} cms={cms}/>)}</div></div></section></>;
 }
 
 export function WhyPage({ locale }: { locale: Locale }) {
@@ -160,9 +187,9 @@ export function WhyPage({ locale }: { locale: Locale }) {
   return <><PageIntro eyebrow={c.nav.why} title={locale === "en" ? "Dependable cleaning. Sensible value." : "भरपर्दो सफाइ। उचित मूल्य।"} copyText={locale === "en" ? "GharChamak is built for the practical middle: trustworthy everyday performance without unnecessary premium pricing." : "घरचमक व्यावहारिक बीचको विकल्पका रूपमा बन्दैछ: अनावश्यक महँगो मूल्यबिना भरपर्दो दैनिक सफाइ।"}/><section className="section"><div className="container benefit-grid">{benefits[locale].map(([Icon,title,text]) => <article className="benefit-card elevated" key={title}><span className="icon-box"><Icon size={22}/></span><h2>{title}</h2><p>{text}</p></article>)}</div></section><ContactBanner locale={locale}/></>;
 }
 
-export function RetailersPage({ locale }: { locale: Locale }) {
+export function RetailersPage({ locale, cms }: { locale: Locale; cms?: CmsPublicContent }) {
   const c = copy[locale];
-  return <><PageIntro eyebrow={c.nav.retailers} title={locale === "en" ? "A practical brand for practical shelves." : "व्यावहारिक पसलका लागि व्यावहारिक ब्रान्ड।"} copyText={locale === "en" ? "Retailers, wholesalers and distribution partners can register interest in GharChamak’s planned product range." : "खुद्रा विक्रेता, थोक विक्रेता र वितरण साझेदारले घरचमकको योजनाबद्ध उत्पादन दायरामा रुचि दर्ता गर्न सक्छन्।"}/><section className="section"><div className="container trade-grid"><article><Store size={28}/><h2>{locale === "en" ? "Retailers" : "खुद्रा विक्रेता"}</h2><p>{locale === "en" ? "Tell us about your store and the customers you serve. We’ll share confirmed stocking information when ready." : "आफ्नो पसल र ग्राहकबारे बताउनुहोस्। पुष्टि भएको स्टक जानकारी तयार भएपछि साझा गर्नेछौं।"}</p><a className="text-link" href={whatsappUrl(whatsappMessages.retailer)} target="_blank" rel="noreferrer">{c.common.enquiry}<ArrowRight size={17}/></a></article><article><Truck size={28}/><h2>{locale === "en" ? "Distributors & wholesalers" : "वितरक र थोक विक्रेता"}</h2><p>{locale === "en" ? "Share your coverage area and distribution interest directly with the GharChamak team." : "आफ्नो वितरण क्षेत्र र सहकार्यको रुचि घरचमक टोलीसँग सिधै साझा गर्नुहोस्।"}</p><a className="text-link" href={whatsappUrl(whatsappMessages.distributor)} target="_blank" rel="noreferrer">{locale === "en" ? "Distributor enquiry" : "वितरण सोधपुछ"}<ArrowRight size={17}/></a></article></div></section><RetailerBanner locale={locale}/></>;
+  return <><PageIntro eyebrow={c.nav.retailers} title={locale === "en" ? "A practical brand for practical shelves." : "व्यावहारिक पसलका लागि व्यावहारिक ब्रान्ड।"} copyText={locale === "en" ? "Retailers, wholesalers and distribution partners can register interest in GharChamak’s planned product range." : "खुद्रा विक्रेता, थोक विक्रेता र वितरण साझेदारले घरचमकको योजनाबद्ध उत्पादन दायरामा रुचि दर्ता गर्न सक्छन्।"}/><section className="section"><div className="container trade-grid"><article><Store size={28}/><h2>{locale === "en" ? "Retailers" : "खुद्रा विक्रेता"}</h2><p>{locale === "en" ? "Tell us about your store and the customers you serve. We’ll share confirmed stocking information when ready." : "आफ्नो पसल र ग्राहकबारे बताउनुहोस्। पुष्टि भएको स्टक जानकारी तयार भएपछि साझा गर्नेछौं।"}</p><a className="text-link" href={whatsappUrl(whatsappMessages.retailer)} target="_blank" rel="noreferrer">{c.common.enquiry}<ArrowRight size={17}/></a></article><article><Truck size={28}/><h2>{locale === "en" ? "Distributors & wholesalers" : "वितरक र थोक विक्रेता"}</h2><p>{locale === "en" ? "Share your coverage area and distribution interest directly with the GharChamak team." : "आफ्नो वितरण क्षेत्र र सहकार्यको रुचि घरचमक टोलीसँग सिधै साझा गर्नुहोस्।"}</p><a className="text-link" href={whatsappUrl(whatsappMessages.distributor)} target="_blank" rel="noreferrer">{locale === "en" ? "Distributor enquiry" : "वितरण सोधपुछ"}<ArrowRight size={17}/></a></article></div></section>{cms?.partners.length ? <section className="section cms-public-section"><div className="container"><SectionHeading eyebrow={locale === "en" ? "Network" : "सञ्जाल"} title={locale === "en" ? "Retail and distribution partners." : "खुद्रा तथा वितरण साझेदार।"} /><div className="cms-partner-grid">{cms.partners.map(partner => <article className="cms-partner-card" key={partner.id}>{partner.imageUrl ? <img src={partner.imageUrl} alt={partner.name} /> : null}<div><span className="cms-badge">{partner.partnerType}</span><h3>{partner.name}</h3>{partner.location ? <p>{partner.location}</p> : null}</div></article>)}</div></div></section> : null}<RetailerBanner locale={locale}/></>;
 }
 
 export function AboutPage({ locale }: { locale: Locale }) {
