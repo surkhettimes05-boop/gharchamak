@@ -1,8 +1,8 @@
 # GharChamak official website
 
-Production-oriented bilingual brand website for **GharChamak by Pasalho**. Built with Next.js App Router, TypeScript, Tailwind CSS and semantic server-rendered HTML.
+Production-oriented bilingual brand website for **GharChamak**, built with Next.js App Router, TypeScript and Tailwind CSS.
 
-## Run locally
+## Local development
 
 Requirements: Node.js 22.13 or later.
 
@@ -11,77 +11,38 @@ npm install
 npm run dev
 ```
 
-Open the local URL shown in the terminal. English pages live under `/en`; Nepali pages live under `/ne`.
+English pages live under `/en`; Nepali pages live under `/ne`.
 
-## Validate and build
+## Production checks
 
 ```bash
 npm run lint
-npx tsc --noEmit
+npm run typecheck
 npm run build
 ```
 
-## Central configuration
+CI runs the same checks on pushes and pull requests to `main`.
 
-Brand contact details, WhatsApp settings, social URLs and the complete product catalog are in `src/config/brand.ts`.
+## Configuration
 
-- Change `phone`, `phoneDisplay` and `whatsappNumber` together when updating the WhatsApp number.
-- Add verified social URLs under `brand.social`. Empty values are not rendered.
-- Change a product's `status` from `coming-soon` to `available` only after commercial availability is confirmed.
-- Add new products to the `products` array and extend the `ProductSlug` type. Then add the slug to the product route validation pattern in `app/[locale]/[[...slug]]/page.tsx`.
+Copy `.env.example` to `.env.local`.
 
-## Brand and product assets
+- `NEXT_PUBLIC_SITE_URL` is the canonical public origin for SEO metadata, sitemap, robots and structured data.
+- On Vercel, the site also falls back to `VERCEL_PROJECT_PRODUCTION_URL` when a canonical override is not supplied.
+- Analytics and advertising scripts are disabled unless their environment IDs are set.
 
-Temporary wordmark files are in `public/brand/`. Replace them with approved artwork while keeping filenames, or update the references in the app metadata and components.
+Brand contact details, WhatsApp settings, social URLs and the product catalog are maintained in `src/config/brand.ts`.
 
-Product asset folders:
+## Product truth
 
-- `public/products/dishwash/`
-- `public/products/floor-cleaner/`
-- `public/products/toilet-cleaner/`
-
-The current site intentionally shows polished category placeholders rather than fabricated packaging. When approved transparent WebP/AVIF product photography is available, replace the visual placeholder component in `src/components/pages.tsx` with `next/image` and provide explicit dimensions and responsive `sizes`.
-
-## Content and translations
-
-Shared English and Nepali interface copy lives in `src/content/site.ts`. Product-specific translated content lives beside each product in `src/config/brand.ts`. Have final Nepali marketing and label copy reviewed before commercial launch.
+All launch products are currently marked `coming-soon`. Do not publish pack sizes, prices, ingredients, certifications, safety claims or retail availability until they are commercially confirmed. Packaging artwork in this repository is concept artwork, not an approved commercial label.
 
 ## SEO
 
-Page metadata, canonical URLs, Open Graph/Twitter support, hreflang alternates and JSON-LD are generated in `app/[locale]/[[...slug]]/page.tsx`. `app/sitemap.ts` and `app/robots.ts` generate crawlable endpoints. Set `NEXT_PUBLIC_SITE_URL` to the final canonical origin in production.
-
-No offer, price, ingredient, certification or availability schema is emitted until factual values exist. To add a social preview image later, place the approved file in `public/` and set `brand.ogImage`.
-
-## Analytics and Search Console
-
-Copy `.env.example` to `.env.local` and add only the IDs you intend to activate:
-
-```text
-NEXT_PUBLIC_SITE_URL=https://your-domain.example
-NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION=
-NEXT_PUBLIC_GA_ID=
-NEXT_PUBLIC_META_PIXEL_ID=
-```
-
-Analytics scripts are not rendered when IDs are empty. If analytics or advertising pixels are enabled for public use, update the privacy notice and consent approach as required for the target market.
+Localized metadata, canonical URLs, hreflang alternates and JSON-LD are generated in `app/[locale]/[[...slug]]/page.tsx`. The sitemap and robots files use the same canonical origin.
 
 ## Deployment
 
-### Vercel (Recommended)
+The project is configured for native Vercel Next.js deployment. Set the production environment values in Vercel before publishing a custom domain.
 
-This project is configured for Vercel deployment:
-
-1. Push your code to a Git repository (GitHub, GitLab, or Bitbucket)
-2. Import the project in Vercel
-3. Configure the following environment variables in Vercel:
-   - `NEXT_PUBLIC_SITE_URL`: Your production domain (e.g., https://your-domain.com)
-   - `NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION`: Google Search Console verification code (optional)
-   - `NEXT_PUBLIC_GA_ID`: Google Analytics ID (optional)
-   - `NEXT_PUBLIC_META_PIXEL_ID`: Meta Pixel ID (optional)
-4. Deploy
-
-The project uses `vercel.json` for configuration and `next.config.ts` with standalone output for optimal Vercel performance.
-
-### Other Platforms
-
-Run `npm run build` for a production build. This project can be adapted to any Next.js-compatible hosting platform. Configure the environment values above on the deployment platform before publishing.
+No database or authentication layer is required for this brand site.

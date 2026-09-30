@@ -22,7 +22,6 @@ export function Logo({ light = false }: { light?: boolean }) {
       <Mark light={light} />
       <span className="logo-copy">
         <strong><span>Ghar</span><em>Chamak</em></strong>
-        <small>by Pasalho</small>
       </span>
     </span>
   );
@@ -40,7 +39,7 @@ export function Header({ locale, currentPath }: { locale: Locale; currentPath: s
 
   return <>
     <a className="skip-link" href="#main">{c.skip}</a>
-    <div className="announcement"><span>GharChamak by Pasalho</span><span>•</span><span>{locale === "en" ? "Built for everyday Nepali homes" : "दैनिक नेपाली घरका लागि"}</span></div>
+    <div className="announcement"><span>GharChamak</span><span>•</span><span>{locale === "en" ? "Built for everyday Nepali homes" : "दैनिक नेपाली घरका लागि"}</span></div>
     <header className="site-header">
       <div className="container nav-shell">
         <Link href={path(locale)} aria-label="GharChamak home"><Logo /></Link>
@@ -79,7 +78,7 @@ export function Footer({ locale }: { locale: Locale }) {
       <div><h2>{locale === "en" ? "Help" : "सहयोग"}</h2><nav><Link href={path(locale, "faq")}>{c.nav.faq}</Link><Link href={path(locale, "contact")}>{c.nav.contact}</Link><Link href={path(locale, "privacy")}>{locale === "en" ? "Privacy" : "गोपनीयता"}</Link><a href={whatsappUrl(whatsappMessages.general)} target="_blank" rel="noreferrer">WhatsApp</a></nav></div>
       <div><h2>{locale === "en" ? "Based in" : "स्थान"}</h2><p>{c.common.location}</p><a className="footer-phone" href={`tel:${brand.phone}`}>{brand.phoneDisplay}</a><div className="socials">{socials.filter(([, url]) => Boolean(url)).map(([name, url, Icon]) => <a key={name} href={url} aria-label={name}><Icon size={18} /></a>)}</div></div>
     </div>
-    <div className="container footer-bottom"><span>© {new Date().getFullYear()} GharChamak by Pasalho.</span><span>{locale === "en" ? "Strong Clean. Fair Price." : brand.taglineNe}</span></div>
+    <div className="container footer-bottom"><span>© {new Date().getFullYear()} GharChamak.</span><span>{locale === "en" ? "Strong Clean. Fair Price." : brand.taglineNe}</span></div>
   </footer>;
 }
 

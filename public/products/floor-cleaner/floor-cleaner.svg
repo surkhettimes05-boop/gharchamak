@@ -5,8 +5,8 @@
 <path d="M215 225c0-35 28-64 64-64h140c36 0 64 29 64 64v448c0 36-29 65-65 65H280c-36 0-65-29-65-65z" fill="url(#l)" stroke="#d8eef2" stroke-width="4"/>
 <path d="M220 562c86 24 163 5 231-57 11-10 21-21 29-32v190c0 44-28 68-68 68H287c-42 0-67-25-67-68z" fill="#00799d"/>
 <path d="M220 607c78 14 151-2 220-48 14-9 27-20 40-31v58c-76 60-162 82-260 66z" fill="#21b8d5"/>
-<text x="350" y="266" text-anchor="middle" font-family="Arial" font-weight="900" font-size="48" fill="#0047BA">GHAR<tspan fill="#E11D2E">CHAMAK</tspan></text><text x="350" y="304" text-anchor="middle" font-family="Arial" font-weight="700" font-size="20" fill="#173b75">by Pasalho</text>
+<text x="350" y="266" text-anchor="middle" font-family="Arial" font-weight="900" font-size="48" fill="#0047BA">GHAR<tspan fill="#E11D2E">CHAMAK</tspan></text>
 <text x="350" y="382" text-anchor="middle" font-family="Arial" font-weight="900" font-size="57" fill="#0047BA">FLOOR</text><text x="350" y="438" text-anchor="middle" font-family="Arial" font-weight="900" font-size="57" fill="#0047BA">CLEANER</text>
 <rect x="270" y="470" width="160" height="44" rx="8" fill="#0a9ba6"/><text x="350" y="501" text-anchor="middle" font-family="Arial" font-weight="900" font-size="25" fill="#fff">FRESH HOME</text>
 <path d="M260 572h180v90H260z" fill="#e8f8fb"/><path d="M270 630h160M300 572v90M350 572v90M400 572v90" stroke="#b4dce8" stroke-width="3"/><circle cx="390" cy="585" r="20" fill="#fff"/><circle cx="410" cy="570" r="12" fill="#fff"/>
-<text x="350" y="695" text-anchor="middle" font-family="Arial" font-weight="800" font-size="26" fill="#fff">500 ml</text></g></svg>
+</g></svg>

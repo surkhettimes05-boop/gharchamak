@@ -1,6 +1,5 @@
 @import "tailwindcss";
 @import "tw-animate-css";
-@import "../vendor/shadcn-tailwind-4.13.0.css";
 
 :root{
   --blue:#0047ba;--blue-2:#0a62dd;--blue-deep:#071b44;--red:#e11d2e;--green:#22c55e;

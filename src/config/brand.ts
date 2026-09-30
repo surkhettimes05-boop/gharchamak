@@ -2,13 +2,33 @@ export type Locale = "en" | "ne";
 export type ProductStatus = "coming-soon" | "available";
 export type ProductSlug = "dishwash-liquid" | "floor-cleaner" | "toilet-cleaner";
 
+function resolveSiteUrl(): string {
+  const configured = process.env.NEXT_PUBLIC_SITE_URL?.trim();
+  const vercelHost = process.env.VERCEL_PROJECT_PRODUCTION_URL?.trim();
+  const candidates = [
+    configured,
+    vercelHost ? `https://${vercelHost}` : undefined,
+    "http://localhost:3000",
+  ];
+
+  for (const candidate of candidates) {
+    if (!candidate) continue;
+    try {
+      return new URL(candidate).origin;
+    } catch {
+      // Ignore malformed optional environment values and try the next source.
+    }
+  }
+
+  return "http://localhost:3000";
+}
+
 export const brand = {
   name: "GharChamak",
-  parentBrand: "Pasalho",
   tagline: "Strong Clean. Fair Price.",
   taglineNe: "बलियो सफाइ, सही दाम।",
-  description: "GharChamak is a Nepal-focused household cleaning brand by Pasalho, built around dependable everyday cleaning and fair prices.",
-  siteUrl: process.env.NEXT_PUBLIC_SITE_URL || "https://gharchamak.vercel.app",
+  description: "GharChamak is a Nepal-focused household cleaning brand built around dependable everyday cleaning and fair prices.",
+  siteUrl: resolveSiteUrl(),
   phoneDisplay: "+977 9822403262",
   phone: "+9779822403262",
   whatsappNumber: "9779822403262",
@@ -16,7 +36,7 @@ export const brand = {
   location: "Birendranagar, Surkhet, Nepal",
   launchNote: "Launching initially from Birendranagar, Surkhet.",
   social: { facebook: "", instagram: "", tiktok: "", youtube: "", x: "" },
-  ogImage: "/brand/gharchamak-range.webp",
+  ogImage: "",
 } as const;
 
 export const products = [

@@ -15,21 +15,21 @@ function validRoute(route: string) { return route === "" || simplePages.includes
 
 const meta: Record<Locale, Record<string, [string, string]>> = {
   en: {
-    "": ["Strong Clean. Fair Price.", "Reliable everyday household cleaning by Pasalho, developed for Nepali homes with dependable quality and fair prices."],
+    "": ["Strong Clean. Fair Price.", "Reliable everyday household cleaning developed for Nepali homes with dependable quality and fair prices."],
     products: ["Household Cleaning Products", "Explore GharChamak dishwash liquid, floor cleaner and toilet cleaner, all currently coming soon in Nepal."],
     "why-gharchamak": ["Why GharChamak", "Learn how GharChamak combines dependable everyday cleaning, consistent quality and fair value for Nepali households."],
     retailers: ["Retailer & Distributor Enquiries", "Register interest in stocking or distributing GharChamak household cleaning products in Nepal."],
-    about: ["About GharChamak by Pasalho", "GharChamak is a Nepal-focused home-care brand by Pasalho with a mission to make dependable cleaning more accessible."],
+    about: ["About GharChamak", "GharChamak is a Nepal-focused home-care brand with a mission to make dependable cleaning more accessible."],
     faq: ["Frequently Asked Questions", "Clear answers about GharChamak products, planned availability, product use and retailer enquiries."],
     contact: ["Contact GharChamak", "Contact GharChamak by WhatsApp or phone for product, retailer and distribution enquiries."],
     privacy: ["Privacy", "How GharChamak handles website enquiries, analytics and personal information."],
   },
   ne: {
-    "": ["बलियो सफाइ, सही दाम।", "पसल्होको घरचमक नेपाली घरका लागि भरपर्दो दैनिक सफाइ र उचित मूल्यमा केन्द्रित ब्रान्ड हो।"],
+    "": ["बलियो सफाइ, सही दाम।", "घरचमक नेपाली घरका लागि भरपर्दो दैनिक सफाइ र उचित मूल्यमा केन्द्रित ब्रान्ड हो।"],
     products: ["घर सफाइ उत्पादनहरू", "घरचमक भाँडा धुने झोल, फ्लोर क्लिनर र ट्वाइलेट क्लिनर हेर्नुहोस्। सबै उत्पादन हाल चाँडै आउँदैछन्।"],
     "why-gharchamak": ["किन घरचमक", "घरचमकको भरपर्दो दैनिक सफाइ, एकरूप गुणस्तर र उचित मूल्यको सोचबारे जान्नुहोस्।"],
     retailers: ["खुद्रा तथा वितरण सोधपुछ", "नेपालमा घरचमक सफाइ उत्पादन राख्न वा वितरण गर्न रुचि दर्ता गर्नुहोस्।"],
-    about: ["पसल्होको घरचमकबारे", "घरचमक भरपर्दो सफाइ धेरै नेपाली घरको पहुँचमा पुर्‍याउने उद्देश्य भएको पसल्होको होम-केयर ब्रान्ड हो।"],
+    about: ["घरचमकबारे", "घरचमक भरपर्दो सफाइ धेरै नेपाली घरको पहुँचमा पुर्‍याउने उद्देश्य भएको नेपाल-केन्द्रित होम-केयर ब्रान्ड हो।"],
     faq: ["बारम्बार सोधिने प्रश्न", "घरचमक उत्पादन, उपलब्धता, प्रयोग र विक्रेता सोधपुछबारे स्पष्ट उत्तर।"],
     contact: ["घरचमक सम्पर्क", "उत्पादन, खुद्रा वा वितरण सोधपुछका लागि WhatsApp वा फोनमार्फत घरचमकलाई सम्पर्क गर्नुहोस्।"],
     privacy: ["गोपनीयता", "घरचमकले वेबसाइट सोधपुछ, एनालिटिक्स र व्यक्तिगत जानकारी कसरी व्यवस्थापन गर्छ।"],
@@ -80,7 +80,7 @@ export default async function LocalizedPage({ params }: { params: Params }) {
   else if (route === "privacy") page = <PrivacyPage locale={locale} />;
   else page = <ProductPage locale={locale} slug={route.split("/")[1] as ProductSlug} />;
 
-  const organization = { "@context": "https://schema.org", "@type": "Organization", name: brand.name, url: brand.siteUrl, description: brand.description, telephone: brand.phone, areaServed: "Nepal", brand: { "@type": "Brand", name: brand.name }, parentOrganization: { "@type": "Organization", name: brand.parentBrand }, sameAs: Object.values(brand.social).filter(Boolean) };
+  const organization = { "@context": "https://schema.org", "@type": "Organization", name: brand.name, url: brand.siteUrl, description: brand.description, telephone: brand.phone, areaServed: "Nepal", brand: { "@type": "Brand", name: brand.name }, sameAs: Object.values(brand.social).filter(Boolean) };
   const website = { "@context": "https://schema.org", "@type": "WebSite", name: brand.name, url: brand.siteUrl, inLanguage: ["en", "ne"] };
   const extra: object[] = [];
   if (route === "faq") extra.push({ "@context": "https://schema.org", "@type": "FAQPage", mainEntity: faqItems[locale].map(([q, a]) => ({ "@type": "Question", name: q, acceptedAnswer: { "@type": "Answer", text: a } })) });

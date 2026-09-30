@@ -5,7 +5,7 @@
 <path d="M221 246c0-36 29-65 65-65h124c36 0 65 29 65 65v420c0 37-30 67-67 67H288c-37 0-67-30-67-67z" fill="url(#l)" stroke="#f0dadd" stroke-width="4"/>
 <path d="M224 560c75 34 149 20 222-43 12-11 23-22 31-34v183c0 42-28 67-69 67H289c-41 0-65-25-65-66z" fill="#a90d1c"/>
 <path d="M224 607c78 17 153 0 225-51 10-7 19-15 28-23v57c-73 54-157 75-253 60z" fill="#e31a2f"/>
-<text x="350" y="281" text-anchor="middle" font-family="Arial" font-weight="900" font-size="48" fill="#0047BA">GHAR<tspan fill="#E11D2E">CHAMAK</tspan></text><text x="350" y="319" text-anchor="middle" font-family="Arial" font-weight="700" font-size="20" fill="#173b75">by Pasalho</text>
+<text x="350" y="281" text-anchor="middle" font-family="Arial" font-weight="900" font-size="48" fill="#0047BA">GHAR<tspan fill="#E11D2E">CHAMAK</tspan></text>
 <text x="350" y="397" text-anchor="middle" font-family="Arial" font-weight="900" font-size="56" fill="#C80E20">TOILET</text><text x="350" y="452" text-anchor="middle" font-family="Arial" font-weight="900" font-size="56" fill="#C80E20">CLEANER</text>
 <rect x="274" y="482" width="152" height="44" rx="8" fill="#d91629"/><text x="350" y="513" text-anchor="middle" font-family="Arial" font-weight="900" font-size="25" fill="#fff">POWER CLEAN</text>
-<ellipse cx="360" cy="596" rx="84" ry="55" fill="#e8f5ff" stroke="#fff" stroke-width="8"/><ellipse cx="360" cy="602" rx="55" ry="30" fill="#1378d1"/><path d="M330 602c20-25 53-27 75-4-14 30-52 37-75 4z" fill="#2bc6ff"/><text x="350" y="696" text-anchor="middle" font-family="Arial" font-weight="800" font-size="26" fill="#fff">500 ml</text></g></svg>
+<ellipse cx="360" cy="596" rx="84" ry="55" fill="#e8f5ff" stroke="#fff" stroke-width="8"/><ellipse cx="360" cy="602" rx="55" ry="30" fill="#1378d1"/><path d="M330 602c20-25 53-27 75-4-14 30-52 37-75 4z" fill="#2bc6ff"/></g></svg>

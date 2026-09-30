@@ -63,7 +63,7 @@ export function HomePage({ locale }: { locale: Locale }) {
             <a className="btn btn-glass btn-lg" href={whatsappUrl(whatsappMessages.general)} target="_blank" rel="noreferrer"><MessageCircle size={18} />{c.common.chat}</a>
           </div>
           <div className="hero-proof">
-            <span><BadgeCheck size={16}/>GharChamak by Pasalho</span>
+            <span><BadgeCheck size={16}/>GharChamak</span>
             <span>{locale === "en" ? "Launching from Surkhet" : "सुर्खेतबाट सुरुवात"}</span>
           </div>
         </div>
@@ -167,7 +167,7 @@ export function RetailersPage({ locale }: { locale: Locale }) {
 
 export function AboutPage({ locale }: { locale: Locale }) {
   const c = copy[locale];
-  return <><PageIntro eyebrow={c.nav.about} title={locale === "en" ? "A home-care brand by Pasalho." : "पसल्होको होम-केयर ब्रान्ड।"} copyText={c.home.storyCopy}/><section className="section"><div className="container about-grid"><article><p className="eyebrow">{locale === "en" ? "Our mission" : "हाम्रो उद्देश्य"}</p><h2>{locale === "en" ? "Make dependable everyday cleaning accessible to more Nepali households." : "भरपर्दो दैनिक सफाइ धेरै नेपाली घरको पहुँचमा पुर्‍याउनु।"}</h2></article><article><h2>{locale === "en" ? "Why GharChamak exists" : "घरचमक किन बनिरहेको छ"}</h2><p>{locale === "en" ? "Families should not have to choose between questionable quality and unnecessary premium pricing. Clear products, consistent quality and sensible prices can earn trust over time." : "परिवारले शंकास्पद गुणस्तर र अनावश्यक महँगो मूल्यबीच छनोट गर्न नपरोस्। स्पष्ट उत्पादन, एकरूप गुणस्तर र उचित मूल्यले समयसँगै विश्वास जित्न सक्छ।"}</p><blockquote><strong>{brand.tagline}</strong><span lang="ne">{brand.taglineNe}</span></blockquote></article></div></section><ContactBanner locale={locale}/></>;
+  return <><PageIntro eyebrow={c.nav.about} title={locale === "en" ? "A home-care brand built for Nepal." : "नेपालका लागि बनेको होम-केयर ब्रान्ड।"} copyText={c.home.storyCopy}/><section className="section"><div className="container about-grid"><article><p className="eyebrow">{locale === "en" ? "Our mission" : "हाम्रो उद्देश्य"}</p><h2>{locale === "en" ? "Make dependable everyday cleaning accessible to more Nepali households." : "भरपर्दो दैनिक सफाइ धेरै नेपाली घरको पहुँचमा पुर्‍याउनु।"}</h2></article><article><h2>{locale === "en" ? "Why GharChamak exists" : "घरचमक किन बनिरहेको छ"}</h2><p>{locale === "en" ? "Families should not have to choose between questionable quality and unnecessary premium pricing. Clear products, consistent quality and sensible prices can earn trust over time." : "परिवारले शंकास्पद गुणस्तर र अनावश्यक महँगो मूल्यबीच छनोट गर्न नपरोस्। स्पष्ट उत्पादन, एकरूप गुणस्तर र उचित मूल्यले समयसँगै विश्वास जित्न सक्छ।"}</p><blockquote><strong>{brand.tagline}</strong><span lang="ne">{brand.taglineNe}</span></blockquote></article></div></section><ContactBanner locale={locale}/></>;
 }
 
 export function FaqPage({ locale }: { locale: Locale }) {
