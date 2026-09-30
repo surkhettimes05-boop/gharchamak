@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { ArrowRight, BadgeCheck, Check, Home, MapPin, MessageCircle, PackageCheck, Phone, Sparkles, Store, Truck, WalletCards } from "lucide-react";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
-import { brand, products, type Locale, type ProductSlug, whatsappMessages, whatsappUrl } from "@/src/config/brand";
+import { brand, products, type Locale, type ProductSlug, type ProductStatus, whatsappMessages, whatsappUrl } from "@/src/config/brand";
 import { copy, faqItems } from "@/src/content/site";
 import type { CmsPublicContent, ProductOverride } from "@/src/cms/types";
 
@@ -31,7 +31,8 @@ export function ProductVisual({ product, large = false, imageUrl }: { product: (
 export function ProductCard({ product, locale, cms }: { product: (typeof products)[number]; locale: Locale; cms?: CmsPublicContent }) {
   const c = copy[locale];
   const override = productOverride(cms, product.slug);
-  const available = override?.status === "available" || (!override?.status && product.status === "available");
+  const status: ProductStatus = override?.status ?? product.status;
+  const available = status === "available";
   return <article className={`product-card card-${product.color}`}>
     <div className="product-card-visual"><ProductVisual product={product} imageUrl={override?.imageUrl} /></div>
     <div className="product-card-body">
@@ -177,7 +178,7 @@ export function ProductsPage({ locale, cms }: { locale: Locale; cms?: CmsPublicC
 }
 
 export function ProductPage({ locale, slug, cms }: { locale: Locale; slug: ProductSlug; cms?: CmsPublicContent }) {
-  const c = copy[locale]; const product = products.find(p => p.slug === slug)!; const related = products.filter(p => p.slug !== slug); const override = productOverride(cms, slug); const available = override?.status === "available" || (!override?.status && product.status === "available");
+  const c = copy[locale]; const product = products.find(p => p.slug === slug)!; const related = products.filter(p => p.slug !== slug); const override = productOverride(cms, slug); const status: ProductStatus = override?.status ?? product.status; const available = status === "available";
   const message = `Namaste, I would like more information about ${product.name.en}.`;
   return <><section className="product-hero"><div className="container"><nav className="breadcrumbs"><Link href={path(locale)}>{c.common.home}</Link><span>/</span><Link href={path(locale, "products")}>{c.nav.products}</Link><span>/</span><span>{product.name[locale]}</span></nav><div className="product-detail-grid"><ProductVisual product={product} large imageUrl={override?.imageUrl}/><div><div className="product-meta"><span className="status-dot"/>{available ? (locale === "en" ? "Available" : "उपलब्ध") : c.common.coming}</div><p className="product-variant">{product.variant[locale]}</p><h1>{product.name[locale]}</h1><p className="product-lead">{product.short[locale]}</p><a className="btn btn-dark btn-lg" href={whatsappUrl(message)} target="_blank" rel="noreferrer"><MessageCircle size={18}/>{c.common.productEnquiry}</a></div></div></div></section><section className="section"><div className="container detail-grid"><article><h2>{c.common.characteristics}</h2><ul className="check-list">{product.characteristics[locale].map(item => <li key={item}><Check size={18}/>{item}</li>)}</ul></article><article><h2>{c.common.use}</h2><p>{product.use[locale]}</p></article><article><h2>{c.common.packSizes}</h2><p>{override?.packSize || c.common.packPending}</p></article>{override?.mrp ? <article><h2>{locale === "en" ? "MRP" : "एमआरपी"}</h2><p>NPR {override.mrp}</p></article> : null}<article><h2>{c.common.safety}</h2><p>{c.common.safetyCopy}</p></article></div></section><section className="section related-section"><div className="container"><SectionHeading title={c.common.related}/><div className="product-grid related-grid">{related.map(p => <ProductCard key={p.slug} product={p} locale={locale} cms={cms}/>)}</div></div></section></>;
 }
