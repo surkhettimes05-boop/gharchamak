@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { ExternalLink, Image as ImageIcon, Megaphone, Package, Quote, Store, Upload } from "lucide-react";
 import { products } from "@/src/config/brand";
 import { getAdminCmsContent } from "@/src/cms/content";
@@ -26,7 +27,7 @@ export default async function AdminPage({ searchParams }: { searchParams: Promis
       <form action={logoutAdmin}><button className="admin-ghost" type="submit">Sign out</button></form>
     </aside>
     <section className="admin-main">
-      <header className="admin-topbar"><div><p className="admin-kicker">GharChamak CMS</p><h1>Content control</h1><p>Signed in as {session.email}</p></div><a className="admin-secondary" href="/en" target="_blank">View website <ExternalLink size={15}/></a></header>
+      <header className="admin-topbar"><div><p className="admin-kicker">GharChamak CMS</p><h1>Content control</h1><p>Signed in as {session.email}</p></div><Link className="admin-secondary" href="/en" target="_blank">View website <ExternalLink size={15}/></Link></header>
       {query.notice ? <div className="admin-alert success">{query.notice}</div> : null}
       {query.error ? <div className="admin-alert danger">{query.error}</div> : null}
       {!data.databaseReady ? <div className="admin-alert danger"><strong>CMS database not ready.</strong> {data.error} Configure DATABASE_URL in Vercel, then redeploy.</div> : null}

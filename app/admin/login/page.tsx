@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { redirect } from "next/navigation";
 import { adminAuthConfigured, getAdminSession } from "@/src/cms/auth";
 import { loginAdmin } from "@/app/admin/actions";
@@ -22,6 +23,6 @@ export default async function AdminLoginPage({ searchParams }: { searchParams: P
       <label>Password<input name="password" type="password" autoComplete="current-password" required /></label>
       <button className="admin-primary" type="submit" disabled={!configured}>Sign in</button>
     </form>
-    <a className="admin-back-link" href="/en">← Back to website</a>
+    <Link className="admin-back-link" href="/en">← Back to website</Link>
   </section></main>;
 }
