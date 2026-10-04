@@ -618,3 +618,22 @@
     padding: .82rem;
   }
 }
+
+.market-price-benchmark {
+  display: grid;
+  gap: .2rem;
+  margin: .8rem 0 .2rem;
+  padding: .72rem .8rem;
+  border: 1px solid #dfe7f2;
+  border-radius: 14px;
+  background: #f8fbff;
+}
+.market-price-benchmark strong {
+  color: #0b2144;
+  font-size: .9rem;
+}
+.market-price-benchmark small {
+  color: #64748b;
+  font-size: .76rem;
+  line-height: 1.45;
+}
