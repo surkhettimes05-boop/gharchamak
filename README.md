@@ -35,7 +35,7 @@ Brand contact details, WhatsApp settings, social URLs and the product catalog ar
 
 ## Product truth
 
-All launch products are currently marked `coming-soon`. Do not publish pack sizes, prices, ingredients, certifications, safety claims or retail availability until they are commercially confirmed. Packaging artwork in this repository is concept artwork, not an approved commercial label.
+All launch products are currently in product and packaging validation and retain the internal `coming-soon` status until commercial release. Public UI renders this state as `In validation / परीक्षणमा`. Do not publish pack sizes, prices, ingredients, certifications, safety claims or retail availability until they are commercially confirmed. Packaging artwork in this repository is concept artwork, not an approved commercial label. Real front/back production pack photos should replace concept proof slots before a product is marked available.
 
 ## SEO
 
