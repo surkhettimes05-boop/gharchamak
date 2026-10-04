@@ -38,7 +38,7 @@ export function ProductCard({ product, locale, cms }: { product: (typeof product
     <div className="product-card-body">
       <div className="product-meta"><span className="status-dot" />{available ? (locale === "en" ? "Available" : "उपलब्ध") : c.common.coming}</div>
       <p className="product-variant">{product.variant[locale]}</p>
-      <h3>{product.name[locale]}</h3>
+      <h3><span lang="ne">{product.name.ne}</span><small className="product-name-en">{product.name.en}</small></h3>
       <p>{product.short[locale]}</p>
       <Link className="text-link" href={path(locale, `products/${product.slug}`)}>{c.common.learn}<ArrowRight size={16} /></Link>
     </div>
@@ -57,95 +57,172 @@ const benefits = {
 
 export function HomePage({ locale, cms }: { locale: Locale; cms?: CmsPublicContent }) {
   const c = copy[locale];
+  const productDetails = products.map(product => {
+    const override = productOverride(cms, product.slug);
+    return {
+      product,
+      status: (override?.status ?? product.status) as ProductStatus,
+      packSize: override?.packSize?.trim() || "",
+      mrp: override?.mrp?.trim() || "",
+      imageUrl: override?.imageUrl,
+    };
+  });
+  const availableProducts = productDetails.filter(item => item.status === "available");
+  const confirmedCommercial = productDetails.filter(item => item.packSize || item.mrp);
+  const commercialSummary = confirmedCommercial.length
+    ? confirmedCommercial.map(item => `${item.product.name.ne}: ${item.packSize || (locale === "ne" ? "साइज पुष्टि हुन बाँकी" : "size pending")}${item.mrp ? ` · रु ${item.mrp}` : ""}`).join(" • ")
+    : (locale === "ne"
+      ? "अन्तिम प्याक साइज र MRP व्यावसायिक रूपमा पुष्टि भएपछि मात्र यहाँ देखाइनेछ।"
+      : "Final pack sizes and MRP will appear here only after commercial confirmation.");
+  const availabilitySummary = availableProducts.length
+    ? (locale === "ne"
+      ? `${availableProducts.length} उत्पादन उपलब्ध देखाइएको छ। नजिकको स्टकिस्ट WhatsApp मा सोध्नुहोस्।`
+      : `${availableProducts.length} product${availableProducts.length === 1 ? "" : "s"} marked available. Ask on WhatsApp for the nearest stockist.`)
+    : (locale === "ne"
+      ? "खुद्रा बिक्री अझै पुष्टि भएको छैन। पहिलो उपलब्धता र नजिकको पसलबारे WhatsApp मा सोध्नुहोस्।"
+      : "Retail sale is not yet confirmed. Ask on WhatsApp for first availability and the nearest stockist.");
+
   return <>
-    <section className="hero-premium">
-      <div className="hero-aurora hero-aurora-one" />
-      <div className="hero-aurora hero-aurora-two" />
-      <div className="container hero-premium-grid">
-        <div className="hero-premium-copy">
-          <div className="hero-chip"><span className="chip-spark">✦</span>{locale === "en" ? "Home care, built for Nepal" : "नेपालका लागि बनेको होम केयर"}</div>
-          <h1>{locale === "en" ? <>A cleaner home.<br/><span>Without the premium.</span></> : <>सफा घर।<br/><span>अनावश्यक महँगो मूल्य बिना।</span></>}</h1>
-          <p className="hero-ne" lang="ne">{brand.taglineNe}</p>
-          <p className="hero-description">{c.home.heroCopy}</p>
-          <div className="button-row">
-            <Link className="btn btn-dark btn-lg" href={path(locale, "products")}>{c.home.explore}<ArrowRight size={18} /></Link>
-            <a className="btn btn-glass btn-lg" href={whatsappUrl(whatsappMessages.general)} target="_blank" rel="noreferrer"><MessageCircle size={18} />{c.common.chat}</a>
+    <section className="gc-home-hero">
+      <div className="container gc-home-hero-grid">
+        <div className="gc-home-hero-copy">
+          <div className="gc-status-pill"><span className="status-dot" />{locale === "ne" ? "उत्पादन र प्याकेजिङ परीक्षणमा" : "Product & packaging validation in progress"}</div>
+          <p className="gc-kicker" lang="ne">नेपाली घरको दैनिक सफाइका लागि • Everyday cleaning for Nepali homes</p>
+          <h1>
+            <span lang="ne">बलियो सफाइ। सही दाम।</span>
+            <small>Strong Clean. Fair Price.</small>
+          </h1>
+          <p className="gc-home-lead" lang="ne">घरचमक भाँडा, भुइँ र ट्वाइलेट सफाइका लागि केन्द्रित नेपाली होम-केयर ब्रान्ड हो—दैनिक प्रयोगमा चाहिने सफाइ, स्पष्ट उत्पादन जानकारी र उचित मूल्यलाई प्राथमिकता दिने।</p>
+          <p className="gc-home-lead-en">GharChamak is a Nepal-focused home-care brand for dish, floor and toilet cleaning—built around useful everyday performance, clear product information and fair value.</p>
+          <div className="gc-primary-actions">
+            <a className="btn btn-dark btn-lg" href={whatsappUrl(whatsappMessages.buy)} target="_blank" rel="noreferrer"><MessageCircle size={19}/>{locale === "ne" ? "कहाँ किन्न पाइन्छ?" : "Where to buy"}</a>
+            <a className="btn btn-outline-strong btn-lg" href={whatsappUrl(whatsappMessages.retailer)} target="_blank" rel="noreferrer"><Store size={19}/>{locale === "ne" ? "घरचमक स्टक गर्नुहोस्" : "Stock this brand"}</a>
           </div>
-          <div className="hero-proof">
-            <span><BadgeCheck size={16}/>GharChamak</span>
-            <span>{locale === "en" ? "Launching from Surkhet" : "सुर्खेतबाट सुरुवात"}</span>
-          </div>
+          <p className="gc-action-note">{availabilitySummary}</p>
         </div>
-        <div className="hero-art">
-          <div className="art-card hero-product-stage">
-            <img className="hero-bottle hero-bottle-dish" src="/products/dishwash/dishwash.svg" alt="GharChamak Dishwash Liquid packaging concept" />
-            <img className="hero-bottle hero-bottle-floor" src="/products/floor-cleaner/floor-cleaner.svg" alt="GharChamak Floor Cleaner packaging concept" />
-            <img className="hero-bottle hero-bottle-toilet" src="/products/toilet-cleaner/toilet-cleaner.svg" alt="GharChamak Toilet Cleaner packaging concept" />
-          </div>
-          <div className="floating-note note-one"><small>{locale === "en" ? "Brand promise" : "ब्रान्ड वाचा"}</small><strong>{brand.tagline}</strong></div>
-          <div className="floating-note note-two"><span className="mini-dot" />{locale === "en" ? "3 focused launch products" : "३ केन्द्रित सुरुवाती उत्पादन"}</div>
+
+        <div className="gc-home-product-stage" aria-label={locale === "ne" ? "घरचमक उत्पादन प्याक अवधारणा" : "GharChamak product pack concepts"}>
+          <div className="gc-pack-label">{locale === "ne" ? "हालको प्याक अवधारणा • अन्तिम उत्पादन फोटो होइन" : "Current pack concepts • not final production photos"}</div>
+          <img className="gc-pack gc-pack-dish" src="/products/dishwash/dishwash.svg" alt="GharChamak Dishwash Liquid front pack concept"/>
+          <img className="gc-pack gc-pack-floor" src="/products/floor-cleaner/floor-cleaner.svg" alt="GharChamak Floor Cleaner front pack concept"/>
+          <img className="gc-pack gc-pack-toilet" src="/products/toilet-cleaner/toilet-cleaner.svg" alt="GharChamak Toilet Cleaner front pack concept"/>
+        </div>
+      </div>
+
+      <div className="container gc-five-answers">
+        <article><span>01</span><div><strong lang="ne">के हो?</strong><small>What is it?</small><p>{locale === "ne" ? "भाँडा धुने झोल, फ्लोर क्लिनर र ट्वाइलेट क्लिनरको केन्द्रित घर-सफाइ दायरा।" : "A focused home-cleaning range: dishwash liquid, floor cleaner and toilet cleaner."}</p></div></article>
+        <article><span>02</span><div><strong lang="ne">कसका लागि?</strong><small>Who is it for?</small><p>{locale === "ne" ? "दैनिक सफाइमा भरपर्दो काम र उचित मूल्य खोज्ने नेपाली घरपरिवारका लागि।" : "For Nepali households that want dependable everyday cleaning without paying for unnecessary premium positioning."}</p></div></article>
+        <article><span>03</span><div><strong lang="ne">किन घरचमक?</strong><small>Why trust / choose it?</small><p>{locale === "ne" ? "बलियो दैनिक सफाइ + सही दाम। पुष्टि नभएको मूल्य, साइज वा उपलब्धतालाई हामी पुष्टि भएको जस्तो देखाउँदैनौं।" : "Strong everyday cleaning + fair value. Unconfirmed price, pack size or availability is never presented as fact."}</p></div></article>
+        <article><span>04</span><div><strong lang="ne">साइज र मूल्य?</strong><small>Sizes & prices</small><p>{commercialSummary}</p></div></article>
+        <article><span>05</span><div><strong lang="ne">कहाँ किन्न?</strong><small>Where / how to order</small><p>{availabilitySummary}</p></div></article>
+      </div>
+    </section>
+
+    <section className="section gc-paths-section">
+      <div className="container">
+        <SectionHeading eyebrow={locale === "ne" ? "दुई स्पष्ट बाटो" : "Two clear paths"} title={locale === "ne" ? "किन्ने ग्राहक र स्टक गर्ने व्यवसाय—दुवैका लागि सीधा सम्पर्क।" : "A direct path for buyers and a separate path for retailers."} />
+        <div className="gc-path-grid">
+          <article className="gc-path-card gc-consumer-path">
+            <span className="icon-box"><Home size={24}/></span>
+            <p className="eyebrow">{locale === "ne" ? "घरायसी ग्राहक" : "Consumers"}</p>
+            <h3 lang="ne">कहाँ किन्न पाइन्छ?</h3>
+            <p>{locale === "ne" ? "नजिकको उपलब्ध पसल, हालको अर्डर विकल्प वा पहिलो स्टकबारे WhatsApp मा सोध्नुहोस्।" : "Ask for the nearest available shop, current order option or first-stock update."}</p>
+            <a className="btn btn-dark" href={whatsappUrl(whatsappMessages.buy)} target="_blank" rel="noreferrer"><MessageCircle size={18}/>{locale === "ne" ? "WhatsApp मा किन्न सोध्नुहोस्" : "Ask to buy on WhatsApp"}</a>
+          </article>
+          <article className="gc-path-card gc-trade-path">
+            <span className="icon-box"><Store size={24}/></span>
+            <p className="eyebrow">{locale === "ne" ? "खुद्रा / वितरक" : "Retailer / Distributor"}</p>
+            <h3 lang="ne">घरचमक स्टक गर्न चाहनुहुन्छ?</h3>
+            <p>{locale === "ne" ? "पसल, होलसेल वा वितरणका लागि छुट्टै trade enquiry पठाउनुहोस्।" : "Send a separate trade enquiry for retail, wholesale or distribution."}</p>
+            <a className="btn btn-dark" href={whatsappUrl(whatsappMessages.retailer)} target="_blank" rel="noreferrer"><Truck size={18}/>{locale === "ne" ? "स्टक / डिस्ट्रीब्युसन सोधपुछ" : "Stock / distribution enquiry"}</a>
+          </article>
         </div>
       </div>
     </section>
 
-    <section className="signal-strip">
-      <div className="container signal-grid">
-        <div><span>01</span><strong>{locale === "en" ? "Clear performance" : "स्पष्ट प्रदर्शन"}</strong></div>
-        <div><span>02</span><strong>{locale === "en" ? "Fair everyday value" : "दैनिक उचित मूल्य"}</strong></div>
-        <div><span>03</span><strong>{locale === "en" ? "Shelf-ready design" : "पसलमैत्री डिजाइन"}</strong></div>
-        <div><span>04</span><strong>{locale === "en" ? "Built for repeat use" : "पुनः प्रयोगका लागि"}</strong></div>
+    <section className="section gc-proof-section">
+      <div className="container">
+        <SectionHeading eyebrow={locale === "ne" ? "दाबीभन्दा पहिले प्रमाण" : "Proof before promises"} title={locale === "ne" ? "अहिले के वास्तविक छ—र के अझै पुष्टि हुन बाँकी छ।" : "What is real today—and what is still waiting for confirmation."} copyText={locale === "ne" ? "वेबसाइटले विकास अवधारणा र व्यावसायिक रूपमा पुष्टि भएको तथ्यलाई छुट्टै देखाउँछ।" : "The site separates development concepts from commercially confirmed facts."} />
+        <div className="gc-proof-grid">
+          <article>
+            <BadgeCheck size={24}/>
+            <h3>{locale === "ne" ? "उत्पादन स्थिति स्पष्ट" : "Clear product status"}</h3>
+            <p>{locale === "ne" ? "तीनै सुरुवाती उत्पादन हाल उत्पादन/प्याकेजिङ validation चरणमा छन्; उपलब्ध नभएको उत्पादनलाई ‘Available’ भनेर देखाइँदैन।" : "The launch range is currently in product/packaging validation; a product is not shown as Available until its status is changed in the CMS."}</p>
+          </article>
+          <article>
+            <PackageCheck size={24}/>
+            <h3>{locale === "ne" ? "प्याक र MRP अनुमान होइन" : "No invented pack or MRP"}</h3>
+            <p>{locale === "ne" ? "प्याक साइज र MRP CMS मा पुष्टि भएपछि मात्र सार्वजनिक हुन्छ।" : "Pack size and MRP are published from the CMS only after you enter confirmed commercial details."}</p>
+          </article>
+          <article>
+            <MapPin size={24}/>
+            <h3>{locale === "ne" ? "सुरुवाती बजार स्पष्ट" : "Launch market is explicit"}</h3>
+            <p>{locale === "ne" ? "प्रारम्भिक फोकस वीरेन्द्रनगर, सुर्खेत हो; वास्तविक खुद्रा साझेदार प्रकाशित भएपछि मात्र ‘कहाँ किन्न’ सूचीमा देखाइनेछ।" : "The initial focus is Birendranagar, Surkhet; real retail partners are shown only when published through the CMS."}</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section className="section gc-pack-proof-section">
+      <div className="container">
+        <SectionHeading eyebrow={locale === "ne" ? "प्याक प्रमाण" : "Pack proof"} title={locale === "ne" ? "Front concept अहिले। वास्तविक front + back उत्पादन फोटो launch अघि।" : "Front concept now. Real front + back production photos before launch."} />
+        <div className="gc-pack-proof-grid">
+          {productDetails.map(({ product, imageUrl }) => <article className="gc-pack-proof-card" key={product.slug}>
+            <div className="gc-pack-proof-side">
+              <span className="gc-side-tag">{locale === "ne" ? "अगाडिको प्याक" : "Front pack"}</span>
+              <ProductVisual product={product} imageUrl={imageUrl}/>
+              <small>{imageUrl ? (locale === "ne" ? "CMS मा अपलोड गरिएको फोटो" : "Uploaded CMS image") : (locale === "ne" ? "हालको concept artwork" : "Current concept artwork")}</small>
+            </div>
+            <div className="gc-pack-proof-side gc-back-placeholder">
+              <span className="gc-side-tag">{locale === "ne" ? "पछाडिको प्याक" : "Back pack"}</span>
+              <PackageCheck size={34}/>
+              <strong>{locale === "ne" ? "वास्तविक उत्पादन फोटो आवश्यक" : "Real production photo required"}</strong>
+              <p>{locale === "ne" ? "अन्तिम लेबल, प्रयोग निर्देशन, सुरक्षा, net quantity, MRP र batch details देखिने वास्तविक फोटो यहाँ राखिनेछ।" : "This slot is reserved for the real production photo showing final label, directions, safety, net quantity, MRP and batch details."}</p>
+            </div>
+            <h3><span lang="ne">{product.name.ne}</span><small>{product.name.en}</small></h3>
+          </article>)}
+        </div>
+      </div>
+    </section>
+
+    <section className="section gc-standard-section">
+      <div className="container gc-standard-grid">
+        <div>
+          <p className="eyebrow">{locale === "ne" ? "हाम्रो release standard" : "Our release standard"}</p>
+          <h2>{locale === "ne" ? "‘Available’ लेख्नुअघि पाँच कुरा पूरा हुनुपर्छ।" : "Five gates before a product is called Available."}</h2>
+          <p>{locale === "ne" ? "यो manufacturing claim होइन—घरचमकको commercial release checklist हो।" : "This is not a manufacturing claim; it is GharChamak’s commercial release checklist."}</p>
+        </div>
+        <div className="gc-standard-list">
+          {[
+            locale === "ne" ? "उत्पादन नमुना र intended cleaning job स्पष्ट" : "Product sample and intended cleaning job are clear",
+            locale === "ne" ? "प्रयोग निर्देशन र सुरक्षा भाषा अन्तिम" : "Directions and safety language are final",
+            locale === "ne" ? "प्याक साइज, net quantity र MRP पुष्टि" : "Pack size, net quantity and MRP are confirmed",
+            locale === "ne" ? "अन्तिम front/back उत्पादन प्याक फोटो उपलब्ध" : "Final front/back production pack photos are available",
+            locale === "ne" ? "खुद्रा उपलब्धता वा अर्डर बाटो वास्तविक रूपमा तयार" : "A real retail or order path is ready",
+          ].map((item, index) => <div key={item}><span>{String(index + 1).padStart(2, "0")}</span><Check size={18}/><p>{item}</p></div>)}
+        </div>
       </div>
     </section>
 
     <section className="section products-section">
       <div className="container">
         <div className="section-topline">
-          <SectionHeading eyebrow={locale === "en" ? "Launch range" : "सुरुवाती दायरा"} title={locale === "en" ? "Three products. One clear promise." : "तीन उत्पादन। एउटै स्पष्ट वाचा।"} copyText={locale === "en" ? "A focused first range designed to look coherent on shelf and solve common cleaning jobs without confusing the customer." : "सामान्य सफाइ आवश्यकताका लागि स्पष्ट, एउटै पहिचान भएको सुरुवाती उत्पादन दायरा।"} />
-          <Link className="text-link section-link" href={path(locale, "products")}>{locale === "en" ? "Explore the range" : "उत्पादन हेर्नुहोस्"}<ArrowRight size={16}/></Link>
+          <SectionHeading eyebrow={locale === "ne" ? "सुरुवाती उत्पादन" : "Launch range"} title={locale === "ne" ? "तीन काम। तीन स्पष्ट उत्पादन।" : "Three jobs. Three focused products."} copyText={locale === "ne" ? "हरेक उत्पादनको नाम र काम नेपाली र English दुवैमा स्पष्ट देखिन्छ।" : "Each product is presented clearly in both Nepali and English."} />
+          <Link className="text-link section-link" href={path(locale, "products")}>{locale === "ne" ? "सबै उत्पादन हेर्नुहोस्" : "See all products"}<ArrowRight size={16}/></Link>
         </div>
         <div className="product-grid">{products.map(p => <ProductCard key={p.slug} product={p} locale={locale} cms={cms} />)}</div>
       </div>
     </section>
 
-    {cms?.offers.length ? <section className="section cms-public-section"><div className="container">
-      <SectionHeading eyebrow={locale === "en" ? "Current offers" : "हालका अफर"} title={locale === "en" ? "Offers worth knowing about." : "थाहा पाउनुपर्ने अफरहरू।"} />
-      <div className="cms-offer-grid">{cms.offers.map(offer => <article className="cms-offer-card" key={offer.id}>
-        {offer.imageUrl ? <img src={offer.imageUrl} alt="" /> : null}
-        <div><span className="cms-badge">{offer.badge || (locale === "en" ? "Offer" : "अफर")}</span><h3>{locale === "ne" && offer.titleNe ? offer.titleNe : offer.title}</h3>
-        <p>{locale === "ne" && offer.descriptionNe ? offer.descriptionNe : offer.description}</p>
-        {offer.ctaUrl ? <a className="text-link" href={offer.ctaUrl}>{offer.ctaLabel || (locale === "en" ? "Learn more" : "थप जान्नुहोस्")}<ArrowRight size={16}/></a> : null}</div>
-      </article>)}</div>
+    {cms?.partners.length ? <section className="section gc-stockists-section"><div className="container">
+      <SectionHeading eyebrow={locale === "ne" ? "प्रकाशित साझेदार" : "Published partners"} title={locale === "ne" ? "वास्तविक retailer / distributor मात्र।" : "Only real published retailers / distributors."} />
+      <div className="gc-partner-grid">{cms.partners.map(partner => <article key={partner.id}><Store size={20}/><div><strong>{partner.name}</strong><p>{partner.location || partner.partnerType}</p></div></article>)}</div>
     </div></section> : null}
-
-    <section className="section system-section">
-      <div className="container system-grid">
-        <div className="system-copy">
-          <p className="eyebrow">{locale === "en" ? "Designed as a system" : "एक प्रणालीको रूपमा डिजाइन"}</p>
-          <h2>{locale === "en" ? "One brand language across every bottle." : "हरेक बोतलमा एउटै ब्रान्ड भाषा।"}</h2>
-          <p>{locale === "en" ? "Deep blue builds trust. Product colors make categories instantly recognizable. The house-and-spark symbol carries the promise of a cleaner home without relying on a generic lettermark." : "गाढा निलोले भरोसा दिन्छ। उत्पादन रंगले श्रेणी छुट्याउँछ। घर र चमक चिन्हले साधारण अक्षर चिन्हभन्दा फरक पहिचान दिन्छ।"}</p>
-          <div className="system-pills"><span>Deep Blue #0047BA</span><span>Bright Red #E11D2E</span><span>Fresh Green #22C55E</span></div>
-        </div>
-        <div className="system-board">
-          <div className="brand-symbol-large">
-            <svg viewBox="0 0 180 150" aria-hidden="true"><path d="M18 72 88 17l74 55" fill="none" stroke="currentColor" strokeWidth="18" strokeLinecap="round" strokeLinejoin="round"/><path d="M43 70v60h92V70" fill="none" stroke="currentColor" strokeWidth="14" strokeLinejoin="round"/><path d="M90 84v27M76 97h28" stroke="currentColor" strokeWidth="10" strokeLinecap="round"/></svg><i>✦</i>
-          </div>
-          <div className="brand-wordmark"><strong><span>Ghar</span><em>Chamak</em></strong></div>
-          <div className="brand-tagline">{brand.tagline}<span lang="ne">{brand.taglineNe}</span></div>
-        </div>
-      </div>
-    </section>
-
-    <section className="section principles-section">
-      <div className="container">
-        <SectionHeading eyebrow={locale === "en" ? "What we optimize for" : "हामी केका लागि बनाउँदैछौँ"} title={c.home.stands} />
-        <div className="benefit-grid">{benefits[locale].map(([Icon, title, text]) => <article className="benefit-card" key={title}><span className="icon-box"><Icon size={22} /></span><h3>{title}</h3><p>{text}</p></article>)}</div>
-      </div>
-    </section>
 
     <RetailerBanner locale={locale} />
 
     {cms?.reviews.length ? <section className="section cms-public-section cms-review-section"><div className="container">
-      <SectionHeading eyebrow={locale === "en" ? "Customer voices" : "ग्राहक अनुभव"} title={locale === "en" ? "What customers are saying." : "ग्राहकले के भन्छन्।"} />
+      <SectionHeading eyebrow={locale === "ne" ? "ग्राहक अनुभव" : "Customer voices"} title={locale === "ne" ? "प्रकाशित वास्तविक प्रतिक्रिया।" : "Published customer feedback."} />
       <div className="cms-review-grid">{cms.reviews.map(review => <article className="cms-review-card" key={review.id}>
         {review.mediaUrl ? <img src={review.mediaUrl} alt="" /> : null}
         <blockquote>“{locale === "ne" && review.quoteNe ? review.quoteNe : review.quote}”</blockquote>
@@ -153,8 +230,12 @@ export function HomePage({ locale, cms }: { locale: Locale; cms?: CmsPublicConte
       </article>)}</div>
     </div></section> : null}
 
-    <section className="section faq-section"><div className="container faq-grid"><SectionHeading eyebrow="FAQ" title={locale === "en" ? "Clear answers, no clutter." : "स्पष्ट उत्तर, अनावश्यक जटिलता बिना।"} copyText={locale === "en" ? "The essentials about GharChamak, availability and future stocking." : "घरचमक, उपलब्धता र भविष्यको स्टकबारे मुख्य जानकारी।"} /><div><FaqList locale={locale} limit={5} /><Link className="text-link faq-more" href={path(locale, "faq")}>{locale === "en" ? "View all questions" : "सबै प्रश्न हेर्नुहोस्"}<ArrowRight size={17} /></Link></div></div></section>
-    <ContactBanner locale={locale} />
+    <section className="section faq-section"><div className="container faq-grid"><SectionHeading eyebrow="FAQ" title={locale === "ne" ? "किन्नुअघि जान्नुपर्ने मुख्य कुरा।" : "What you should know before buying."} copyText={locale === "ne" ? "उत्पादन, मूल्य, उपलब्धता र स्टकिङबारे स्पष्ट उत्तर।" : "Clear answers on products, price, availability and stocking."} /><div><FaqList locale={locale} limit={5} /><Link className="text-link faq-more" href={path(locale, "faq")}>{locale === "ne" ? "सबै प्रश्न हेर्नुहोस्" : "View all questions"}<ArrowRight size={17}/></Link></div></div></section>
+
+    <div className="gc-mobile-actions" aria-label={locale === "ne" ? "छिटो कार्य" : "Quick actions"}>
+      <a href={whatsappUrl(whatsappMessages.buy)} target="_blank" rel="noreferrer"><MessageCircle size={18}/><span>{locale === "ne" ? "किन्ने" : "Buy"}</span></a>
+      <a href={whatsappUrl(whatsappMessages.retailer)} target="_blank" rel="noreferrer"><Store size={18}/><span>{locale === "ne" ? "स्टक गर्ने" : "Stock"}</span></a>
+    </div>
   </>;
 }
 
