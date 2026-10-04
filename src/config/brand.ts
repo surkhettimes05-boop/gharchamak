@@ -48,6 +48,7 @@ export const products = [
 export function whatsappUrl(message: string) { return `https://wa.me/${brand.whatsappNumber}?text=${encodeURIComponent(message)}`; }
 export const whatsappMessages = {
   general: "Namaste, I would like to know more about GharChamak.",
+  buy: "Namaste, I want to buy GharChamak. Please tell me the nearest available shop or current order option in/around Birendranagar.",
   retailer: "Namaste, I am interested in stocking GharChamak products. Please share retailer details.",
   distributor: "Namaste, I am interested in GharChamak distribution opportunities. Please share details.",
 };
