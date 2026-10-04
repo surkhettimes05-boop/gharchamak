@@ -40,6 +40,10 @@ export function ProductCard({ product, locale, cms }: { product: (typeof product
       <p className="product-variant">{product.variant[locale]}</p>
       <h3><span lang="ne">{product.name.ne}</span><small className="product-name-en">{product.name.en}</small></h3>
       <p>{product.short[locale]}</p>
+      <div className="market-price-benchmark">
+        <strong>{locale === "ne" ? `बजार औसत: रु ${product.marketBenchmark.midpointMrp}` : `Market midpoint: Rs ${product.marketBenchmark.midpointMrp}`}</strong>
+        <small>{product.marketBenchmark.size} · {locale === "ne" ? `value रु ${product.marketBenchmark.valueMrp} / premium रु ${product.marketBenchmark.premiumMrp}` : `value Rs ${product.marketBenchmark.valueMrp} / premium Rs ${product.marketBenchmark.premiumMrp}`}</small>
+      </div>
       <Link className="text-link" href={path(locale, `products/${product.slug}`)}>{c.common.learn}<ArrowRight size={16} /></Link>
     </div>
   </article>;
@@ -71,9 +75,10 @@ export function HomePage({ locale, cms }: { locale: Locale; cms?: CmsPublicConte
   const confirmedCommercial = productDetails.filter(item => item.packSize || item.mrp);
   const commercialSummary = confirmedCommercial.length
     ? confirmedCommercial.map(item => `${item.product.name.ne}: ${item.packSize || (locale === "ne" ? "साइज पुष्टि हुन बाँकी" : "size pending")}${item.mrp ? ` · रु ${item.mrp}` : ""}`).join(" • ")
-    : (locale === "ne"
-      ? "अन्तिम प्याक साइज र MRP व्यावसायिक रूपमा पुष्टि भएपछि मात्र यहाँ देखाइनेछ।"
-      : "Final pack sizes and MRP will appear here only after commercial confirmation.");
+    : productDetails.map(item => locale === "ne"
+      ? `${item.product.name.ne} ${item.product.marketBenchmark.size}: बजार औसत रु ${item.product.marketBenchmark.midpointMrp}`
+      : `${item.product.name.en} ${item.product.marketBenchmark.size}: market midpoint Rs ${item.product.marketBenchmark.midpointMrp}`
+    ).join(" • ");
   const availabilitySummary = availableProducts.length
     ? (locale === "ne"
       ? `${availableProducts.length} उत्पादन उपलब्ध देखाइएको छ। नजिकको स्टकिस्ट WhatsApp मा सोध्नुहोस्।`
@@ -261,7 +266,9 @@ export function ProductsPage({ locale, cms }: { locale: Locale; cms?: CmsPublicC
 export function ProductPage({ locale, slug, cms }: { locale: Locale; slug: ProductSlug; cms?: CmsPublicContent }) {
   const c = copy[locale]; const product = products.find(p => p.slug === slug)!; const related = products.filter(p => p.slug !== slug); const override = productOverride(cms, slug); const status: ProductStatus = override?.status ?? product.status; const available = status === "available";
   const message = `Namaste, I would like more information about ${product.name.en}.`;
-  return <><section className="product-hero"><div className="container"><nav className="breadcrumbs"><Link href={path(locale)}>{c.common.home}</Link><span>/</span><Link href={path(locale, "products")}>{c.nav.products}</Link><span>/</span><span>{product.name[locale]}</span></nav><div className="product-detail-grid"><ProductVisual product={product} large imageUrl={override?.imageUrl}/><div><div className="product-meta"><span className="status-dot"/>{available ? (locale === "en" ? "Available" : "उपलब्ध") : c.common.coming}</div><p className="product-variant">{product.variant[locale]}</p><h1>{product.name[locale]}</h1><p className="product-lead">{product.short[locale]}</p><a className="btn btn-dark btn-lg" href={whatsappUrl(message)} target="_blank" rel="noreferrer"><MessageCircle size={18}/>{c.common.productEnquiry}</a></div></div></div></section><section className="section"><div className="container detail-grid"><article><h2>{c.common.characteristics}</h2><ul className="check-list">{product.characteristics[locale].map(item => <li key={item}><Check size={18}/>{item}</li>)}</ul></article><article><h2>{c.common.use}</h2><p>{product.use[locale]}</p></article><article><h2>{c.common.packSizes}</h2><p>{override?.packSize || c.common.packPending}</p></article>{override?.mrp ? <article><h2>{locale === "en" ? "MRP" : "एमआरपी"}</h2><p>NPR {override.mrp}</p></article> : null}<article><h2>{c.common.safety}</h2><p>{c.common.safetyCopy}</p></article></div></section><section className="section related-section"><div className="container"><SectionHeading title={c.common.related}/><div className="product-grid related-grid">{related.map(p => <ProductCard key={p.slug} product={p} locale={locale} cms={cms}/>)}</div></div></section></>;
+  return <><section className="product-hero"><div className="container"><nav className="breadcrumbs"><Link href={path(locale)}>{c.common.home}</Link><span>/</span><Link href={path(locale, "products")}>{c.nav.products}</Link><span>/</span><span>{product.name[locale]}</span></nav><div className="product-detail-grid"><ProductVisual product={product} large imageUrl={override?.imageUrl}/><div><div className="product-meta"><span className="status-dot"/>{available ? (locale === "en" ? "Available" : "उपलब्ध") : c.common.coming}</div><p className="product-variant">{product.variant[locale]}</p><h1>{product.name[locale]}</h1><p className="product-lead">{product.short[locale]}</p><a className="btn btn-dark btn-lg" href={whatsappUrl(message)} target="_blank" rel="noreferrer"><MessageCircle size={18}/>{c.common.productEnquiry}</a></div></div></div></section><section className="section"><div className="container detail-grid"><article><h2>{c.common.characteristics}</h2><ul className="check-list">{product.characteristics[locale].map(item => <li key={item}><Check size={18}/>{item}</li>)}</ul></article><article><h2>{c.common.use}</h2><p>{product.use[locale]}</p></article><article><h2>{c.common.packSizes}</h2><p>{override?.packSize || c.common.packPending}</p></article>{override?.mrp
+    ? <article><h2>{locale === "en" ? "Final MRP" : "अन्तिम MRP"}</h2><p>NPR {override.mrp}</p></article>
+    : <article><h2>{locale === "en" ? "Market price benchmark" : "बजार मूल्य benchmark"}</h2><p>{product.marketBenchmark.size}: NPR {product.marketBenchmark.midpointMrp} midpoint <small>({locale === "en" ? `value ${product.marketBenchmark.valueMrp} / premium ${product.marketBenchmark.premiumMrp}` : `value ${product.marketBenchmark.valueMrp} / premium ${product.marketBenchmark.premiumMrp}`})</small></p></article>}<article><h2>{c.common.safety}</h2><p>{c.common.safetyCopy}</p></article></div></section><section className="section related-section"><div className="container"><SectionHeading title={c.common.related}/><div className="product-grid related-grid">{related.map(p => <ProductCard key={p.slug} product={p} locale={locale} cms={cms}/>)}</div></div></section></>;
 }
 
 export function WhyPage({ locale }: { locale: Locale }) {
