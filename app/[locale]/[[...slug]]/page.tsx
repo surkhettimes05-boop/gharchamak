@@ -18,7 +18,7 @@ function validRoute(route: string) { return route === "" || simplePages.includes
 const meta: Record<Locale, Record<string, [string, string]>> = {
   en: {
     "": ["Strong Clean. Fair Price.", "Reliable everyday household cleaning developed for Nepali homes with dependable quality and fair prices."],
-    products: ["Household Cleaning Products", "Explore GharChamak dishwash liquid, floor cleaner and toilet cleaner, all currently coming soon in Nepal."],
+    products: ["Household Cleaning Products", "Explore GharChamak dishwash liquid, floor cleaner and toilet cleaner, currently in product and packaging validation for Nepal."],
     "why-gharchamak": ["Why GharChamak", "Learn how GharChamak combines dependable everyday cleaning, consistent quality and fair value for Nepali households."],
     retailers: ["Retailer & Distributor Enquiries", "Register interest in stocking or distributing GharChamak household cleaning products in Nepal."],
     about: ["About GharChamak", "GharChamak is a Nepal-focused home-care brand with a mission to make dependable cleaning more accessible."],
@@ -28,7 +28,7 @@ const meta: Record<Locale, Record<string, [string, string]>> = {
   },
   ne: {
     "": ["बलियो सफाइ, सही दाम।", "घरचमक नेपाली घरका लागि भरपर्दो दैनिक सफाइ र उचित मूल्यमा केन्द्रित ब्रान्ड हो।"],
-    products: ["घर सफाइ उत्पादनहरू", "घरचमक भाँडा धुने झोल, फ्लोर क्लिनर र ट्वाइलेट क्लिनर हेर्नुहोस्। सबै उत्पादन हाल चाँडै आउँदैछन्।"],
+    products: ["घर सफाइ उत्पादनहरू", "घरचमक भाँडा धुने झोल, फ्लोर क्लिनर र ट्वाइलेट क्लिनर हेर्नुहोस्। सबै उत्पादन हाल उत्पादन र प्याकेजिङ परीक्षणमा छन्।"],
     "why-gharchamak": ["किन घरचमक", "घरचमकको भरपर्दो दैनिक सफाइ, एकरूप गुणस्तर र उचित मूल्यको सोचबारे जान्नुहोस्।"],
     retailers: ["खुद्रा तथा वितरण सोधपुछ", "नेपालमा घरचमक सफाइ उत्पादन राख्न वा वितरण गर्न रुचि दर्ता गर्नुहोस्।"],
     about: ["घरचमकबारे", "घरचमक भरपर्दो सफाइ धेरै नेपाली घरको पहुँचमा पुर्‍याउने उद्देश्य भएको नेपाल-केन्द्रित होम-केयर ब्रान्ड हो।"],
